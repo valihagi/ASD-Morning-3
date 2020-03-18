@@ -1,4 +1,4 @@
-package
+package com.asdmorning3.test;
 
 public class main {
 
