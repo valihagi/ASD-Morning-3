@@ -6,8 +6,10 @@ import java.awt.*;
 public class GUI {
     public static void main(String args[])
     {
-        String[] words1, words2;
-        JFrame frame = new JFrame("test");
+        JFrame frame = new JFrame("GUI");
+
+        JPanel pane = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
         JButton btnSubmit = new JButton("Add");
         JTextField txtFld1 = new JTextField();
         JTextField txtFld2 = new JTextField();
@@ -18,19 +20,42 @@ public class GUI {
         JComboBox comboBoxLang1 = new JComboBox();
         JComboBox comboBoxLang2 = new JComboBox();
 
-        frame.setSize(300, 300);
-        frame.setLayout(new GridLayout(0,2));
-        frame.add(lblLang1);
-        frame.add(lblLang2);
-        frame.add(comboBoxLang1);
-        frame.add(comboBoxLang2);
-        frame.add(lblWord1);
-        frame.add(lblWord2);
-        frame.add(txtFld1);
-        frame.add(txtFld2);
-        frame.add(btnSubmit);
+        frame.setSize(600, 600);
 
-        //frame.add(txtFld);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        pane.add(lblLang1, c);
+        c.gridx = 1;
+        c.gridy = 0;
+        pane.add(lblLang2, c);
+        c.gridx = 0;
+        c.gridy = 1;
+        pane.add(comboBoxLang1, c);
+        c.gridx = 1;
+        c.gridy = 1;
+        pane.add(comboBoxLang2, c);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        pane.add(lblWord1, c);
+        c.gridx = 1;
+        c.gridy = 2;
+        pane.add(lblWord2, c);
+
+        c.gridx = 0;
+        c.gridy = 3;
+        pane.add(txtFld1, c);
+        c.gridx = 1;
+        c.gridy = 3;
+        pane.add(txtFld2, c);
+
+        c.gridx = 1;
+        c.gridy = 4;
+        pane.add(btnSubmit, c);
+
+        frame.add(pane);
         frame.setVisible(true);
     }
 }
