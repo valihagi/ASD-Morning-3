@@ -1,4 +1,4 @@
-package com.asdmorning3.test;
+package com.asdmorning3.basic;
 
 import javafx.util.Pair;
 
@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class GUI {
+
+    VocableDictionary vcb;
 
     JFrame frame;
     JPanel pane;
@@ -21,32 +23,11 @@ public class GUI {
     JLabel lblWord2;
     JComboBox comboBoxLang1;
     JComboBox comboBoxLang2;
-    List<Translation> translations;
 
-    static public class Translation {
-        Pair<String, String> transl1;
-        Pair<String, String> transl2;
-
-        public Translation(String l1, String t1, String l2, String t2)
-        {
-            transl1 = new Pair<String, String>(l1, t1);
-            transl2 = new Pair<String, String>(l2, t2);
-        }
-
-        public Pair<String, String> getTranslation1()
-        {
-            return transl1;
-        }
-        public Pair<String, String> getTranslation2()
-        {
-            return transl2;
-        }
-    }
-
-    public GUI()
+    public GUI(VocableDictionary v)
     {
         frame = new JFrame("GUI");
-
+        vcb = v;
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         btnSubmit = new JButton("Add");
@@ -104,8 +85,7 @@ public class GUI {
         btnSubmit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                translations.add(new Translation(comboBoxLang1.getSelectedItem().toString(), txtFld1.getText(),
-                        comboBoxLang2.getSelectedItem().toString(), txtFld2.getText()));
+                vcb.getVocableList().
             }
         });
         pane.add(btnSubmit, c);
@@ -117,9 +97,5 @@ public class GUI {
     public static void main(String args[])
     {
         GUI g = new GUI();
-    }
-
-    public List<Translation> getTranslations() {
-        return translations;
     }
 }
