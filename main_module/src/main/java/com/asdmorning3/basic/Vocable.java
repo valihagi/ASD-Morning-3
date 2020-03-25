@@ -2,10 +2,10 @@ package com.asdmorning3.basic;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
-public class Vocable {
+public class Vocable implements Serializable {
 
 	public Vocable(@NotNull String word, @NotNull Language language) {
 		if (word.length() == 0)
@@ -37,13 +37,13 @@ public class Vocable {
 		return translation_.get(language);
 	}
 
-	public void addTranslation_(@NotNull Vocable vocable) throws IllegalArgumentException
+	public void addTranslation(@NotNull Vocable vocable) throws IllegalArgumentException
 	{
-		if (vocable.getLanguage_() == language_)
+		if (vocable.getLanguage() == language_)
 		{
-			throw new IllegalArgumentException("Can't have a Translation from " + language_ + " to " + vocable.getLanguage_()); //TODO constant for interface language
+			throw new IllegalArgumentException("Can't have a Translation from " + language_ + " to " + vocable.getLanguage()); //TODO constant for interface language
 		}
-		translation_.put(vocable.getLanguage_(), vocable);
+		translation_.put(vocable.getLanguage(), vocable);
 		vocable.viceVersaTranslation(language_, this);
 	}
 
@@ -63,7 +63,7 @@ public class Vocable {
 		translation_.remove(language);
 	}
 
-	public String getWord_() {
+	public String getWord() {
 		return word_;
 	}
 
@@ -71,11 +71,16 @@ public class Vocable {
 		this.word_ = word_;
 	}
 
-	public Language getLanguage_() {
+	public Language getLanguage() {
 		return language_;
 	}
 
 	public void setLanguage_(Language language_) {
 		this.language_ = language_;
+	}
+
+	public boolean equals(Vocable vocable)
+	{
+		return vocable.getWord().equals(word_) && vocable.getLanguage().equals(language_);
 	}
 }
