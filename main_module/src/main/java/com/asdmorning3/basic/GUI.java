@@ -6,12 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Dictionary;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI {
 
     VocableDictionary vcb;
-
     JFrame frame;
     JPanel pane;
     JButton btnSubmit;
@@ -21,12 +22,12 @@ public class GUI {
     JLabel lblLang2;
     JLabel lblWord1;
     JLabel lblWord2;
-    JComboBox comboBoxLang1;
-    JComboBox comboBoxLang2;
+    public JComboBox<Vocable.Language> comboBoxLang1;
+    public JComboBox<Vocable.Language> comboBoxLang2;
 
     public GUI(VocableDictionary v)
     {
-        frame = new JFrame("GUI");
+        frame = new JFrame("Vocabulary Trainer");
         vcb = v;
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -37,8 +38,8 @@ public class GUI {
         lblLang2 = new JLabel("Language:");
         lblWord1 = new JLabel("Word:");
         lblWord2 = new JLabel("Word:");
-        comboBoxLang1 = new JComboBox();
-        comboBoxLang2 = new JComboBox();
+        comboBoxLang1 = new JComboBox<>(Vocable.Language.values());
+        comboBoxLang2 = new JComboBox<>(Vocable.Language.values());
 
         frame.setSize(600, 600);
 
@@ -77,7 +78,7 @@ public class GUI {
         pane.add(txtFld1, c);
         c.gridx = 1;
         c.gridy = 3;
-        c.insets = new Insets(10, 0, 15, 55);
+        c.insets = new Insets(10, 0, 0, 55);
         pane.add(txtFld2, c);
 
         c.gridx = 1;
@@ -85,8 +86,15 @@ public class GUI {
         btnSubmit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                vcb.getVocableList().
-            }
+                try {
+                    vcb.addVocable(new Vocable(txtFld1.getText(), (Vocable.Language) Objects.requireNonNull(comboBoxLang1.getSelectedItem())),
+                            new Vocable(txtFld2.getText(), (Vocable.Language) Objects.requireNonNull(comboBoxLang2.getSelectedItem())));
+                }
+                catch(NullPointerException ex)
+                {
+                    System.out.println("one of the objects is null");
+                }
+             }
         });
         pane.add(btnSubmit, c);
 
@@ -94,8 +102,12 @@ public class GUI {
         frame.setVisible(true);
     }
 
+    /* testing
     public static void main(String args[])
     {
-        GUI g = new GUI();
-    }
+        VocableDictionary d = new VocableDictionary();
+        d.addVocable(new Vocable("hallo", Vocable.Language.GER),
+                new Vocable("hello", Vocable.Language.ENG));
+        GUI g = new GUI(d);
+    }*/
 }
