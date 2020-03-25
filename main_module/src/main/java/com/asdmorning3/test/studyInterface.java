@@ -6,7 +6,7 @@ import java.awt.event.*;
 class studyInterface {
     static JFrame frame;
     private static JDialog d;
-    static JList b;
+    static JList list;
     public studyInterface() {
         frame = new JFrame("Study Interface");
         JPanel pane = new JPanel(new GridBagLayout());
@@ -16,6 +16,7 @@ class studyInterface {
         final String[] english = {"house", "dog", "cat", "mouse"};
         final String[] german = {"Haus", "Hund", "Katze", "Maus"};
         final JComboBox setLanguages = new JComboBox(languages);
+        final JComboBox setAnotherLanguage;
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -37,10 +38,12 @@ class studyInterface {
                 String currentLanguage = String.valueOf(obj);
                 d = new JDialog(frame, currentLanguage);
                 d.setSize(400, 400);
-                if(currentLanguage == "English")
-                    b = new JList(english);
+                if(currentLanguage == "English") {
+                    list = new JList(english);
+                }
                 else
-                    b = new JList(german);
+                    list = new JList(german);
+
                 d.add(b);
                 d.setVisible(true);
             }
