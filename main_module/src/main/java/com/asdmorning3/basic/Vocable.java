@@ -1,13 +1,19 @@
 package com.asdmorning3.basic;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Vocable {
 
-	public Vocable(String word_, Language language_) {
-		this.word_ = word_;
-		this.language_ = language_;
+	public Vocable(@NotNull String word, @NotNull Language language) {
+		if (word.length() == 0)
+		{
+			throw new IllegalArgumentException("Word has to be at least of lentght one."); //TODO constant for interface language
+		}
+		this.word_ = word;
+		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
 	}
 
@@ -22,18 +28,22 @@ public class Vocable {
 
 	private HashMap<Language, Vocable> translation_;
 
-	public Vocable getTranslation(Language language) throws IndexOutOfBoundsException, NullPointerException
-	{
-		return translation_.get(language);
-	}
-
-	public void addTranslation_(Language language, Vocable vocable) throws IllegalArgumentException
+	public Vocable getTranslation(@NotNull Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
 	{
 		if (language == language_)
 		{
-			throw new IllegalArgumentException("Can't have a Translation from " + language_ + " to " + language);
+			throw new IllegalArgumentException("Translation to same language not supported."); //TODO constant for interface language
 		}
-		translation_.put(language, vocable);
+		return translation_.get(language);
+	}
+
+	public void addTranslation_(@NotNull Vocable vocable) throws IllegalArgumentException
+	{
+		if (vocable.getLanguage_() == language_)
+		{
+			throw new IllegalArgumentException("Can't have a Translation from " + language_ + " to " + vocable.getLanguage_()); //TODO constant for interface language
+		}
+		translation_.put(vocable.getLanguage_(), vocable);
 		vocable.viceVersaTranslation(language_, this);
 	}
 
