@@ -1,14 +1,14 @@
 package com.asdmorning3.junit;
 
 import com.asdmorning3.basic.Vocable;
-import junit.framework.TestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class test001b extends TestCase {
+
+public class test001b {
 
 	@Test
-	@DisplayName("Vocable Test")
+	@DisplayName("Vocable Test Basic")
 	void vocableTest()
 	{
 		Vocable vocable1 = new Vocable("what", Vocable.Language.ENG);
