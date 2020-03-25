@@ -2,15 +2,14 @@ package com.asdmorning3.junit;
 
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
-import javafx.util.Pair;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 
@@ -35,6 +34,7 @@ public class test001b {
 		vocable1 = null;
 		vocable2 = null;
 		vocable3 = null;
+		dictionary = new VocableDictionary();
 		String errorMessage = null;
 		try{
 			vocable1 = new Vocable(english, Vocable.Language.ENG);
@@ -73,7 +73,7 @@ public class test001b {
 			System.out.println(e.getMessage());
 			return;
 		}
-		vocable1.addTranslation_(vocable2);
+		vocable1.addTranslation(vocable2);
 		assert (vocable1.getTranslation(Vocable.Language.GER) == vocable2);
 	}
 
@@ -82,7 +82,73 @@ public class test001b {
 	@ParameterizedTest
 	@DisplayName("Dictionary Test")
 	@MethodSource ("stringStream")
-	void dictionaryTest(String english, String german)
+	void dictionaryTest(String english, String german) throws IOException {
+		try{
+			initVocables(english, german);
+		}
+		catch (IllegalArgumentException e)
+		{
+			System.out.println(e.getMessage());
+			return;
+		}
+		dictionary.addVocable(vocable1, vocable2);
+		assert(vocable1.getTranslation(vocable2.getLanguage()).equals(vocable2));
+		assert(vocable2.getTranslation(vocable1.getLanguage()).equals(vocable1));
+		dictionary.addVocable(vocable2, vocable2);
+		dictionary.addVocable(vocable1, vocable2);
+		assert(dictionary.getVocableList().size() == 2);
+		assert(dictionary.getVocableList().contains(vocable1));
+		assert(dictionary.getVocableList().contains(vocable2));
+		try{
+			vocable2.getTranslation(vocable2.getLanguage());
+		}
+		catch (IllegalArgumentException e)
+		{
+			try{
+				dictionary.save("dictionary.save");
+			}
+			catch (IOException ex)
+			{
+				System.out.println("save did not work: " + ex.getMessage());
+			}
+			try
+			{
+				dictionary.load("dictionary.save");
+			} catch (ClassNotFoundException|IOException ex)
+			{
+				System.out.println("open did not work: " + ex.getMessage());
+				assert(false);
+			}
+			assert(dictionary.getVocableList().size() == 2);
+			for(Vocable vocable: dictionary.getVocableList())
+			{
+				assert (vocable1.equals(vocable) || vocable2.equals(vocable));
+			}
+			assert(vocable1.getTranslation(vocable2.getLanguage()).equals(vocable2));
+			assert(vocable2.getTranslation(vocable1.getLanguage()).equals(vocable1));
+			try
+			{
+				dictionary.load("this_file_does_not_exist.exe");
+			}
+			catch (ClassNotFoundException | IOException ex)
+			{
+				try
+				{
+					dictionary.load("pom.xml");
+				} catch (ClassNotFoundException | IOException exception)
+				{
+					exception.printStackTrace();
+					return;
+				}
+			}
+		}
+		assert(false);
+	}
+
+	@ParameterizedTest
+	@DisplayName("Find Vocable")
+	@MethodSource("stringStream")
+	void findVocable(String english, String german)
 	{
 		try{
 			initVocables(english, german);
@@ -92,22 +158,16 @@ public class test001b {
 			System.out.println(e.getMessage());
 			return;
 		}
-		dictionary = new VocableDictionary();
 		dictionary.addVocable(vocable1, vocable2);
-		assert(vocable1.getTranslation(vocable2.getLanguage_()) == vocable2);
-		assert(vocable2.getTranslation(vocable1.getLanguage_()) == vocable1);
-		dictionary.addVocable(vocable2, vocable2);
-		dictionary.addVocable(vocable1, vocable2);
-		assert(dictionary.getVocableList().size() == 2);
-		assert(dictionary.getVocableList().contains(vocable1));
-		assert(dictionary.getVocableList().contains(vocable2));
-		try{
-			vocable2.getTranslation(vocable2.getLanguage_());
-		}
-		catch (IllegalArgumentException e)
+		String word_ = vocable1.getWord();
+		Vocable.Language language_ = vocable1.getLanguage();
+		assert(word_.length() >= 1);
+		assert (language_ != null);
+		List<Vocable> results = dictionary.findVocable(word_, language_);
+		System.out.println("found " + results.size() + " results");
+		for (Vocable vocable: results)
 		{
-			return;
+			assert (vocable.equals(vocable1));
 		}
-		assert(false);
 	}
 }
