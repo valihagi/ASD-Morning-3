@@ -1,5 +1,6 @@
 package com.asdmorning3.basic;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,9 +14,12 @@ public class VocableDictionary implements Serializable {
 	public VocableDictionary()
 	{
 		vocableList = new HashSet<>();
+		tagsList = new ArrayList<Tags>();
 	}
 
 	private HashSet<Vocable> vocableList;
+
+	private ArrayList<Tags> tagsList;
 
 	public HashSet<Vocable> getVocableList()
 	{
@@ -78,6 +82,29 @@ public class VocableDictionary implements Serializable {
 		}
 		vocableList.addAll(Arrays.asList(vocables));
 	}
+
+	public Tags createTag(String description, Color color)
+	{
+		for(Tags tag : tagsList)
+		{
+			if(tag.getDescription().equals(description))
+				return tag;
+		}
+		Tags tag = new Tags(description, color);
+		tagsList.add(tag);
+		return tag;
+	}
+
+	public void addTagToVocable(Tags tag, Vocable vocable)
+	{
+		boolean addSuccess = vocable.addTag(tag);
+	}
+
+	public void removeTagToVocable(Tags tag, Vocable vocable)
+	{
+		boolean removeSuccess = vocable.removeTag(tag);
+	}
+
 
 
 }
