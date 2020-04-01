@@ -1,10 +1,7 @@
 package com.asdmorning3.basic;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -49,6 +46,25 @@ public class VocableDictionary implements Serializable {
 		vocableList = (HashSet<Vocable>) ois.readObject();
 	}
 
+	public List<Vocable> getAllFromLanguage(Vocable.Language lang)
+	{
+		List<Vocable> vocables = new ArrayList<>();
+		for(Vocable v : vocableList)
+		{
+			if(v.getLanguage() == lang)
+				vocables.add(v);
+		}
+		return vocables;
+	}
+
+	public boolean exists(Vocable v)
+	{
+		for(Vocable d : getAllFromLanguage(v.getLanguage()))
+			if(Objects.equals(d.getWord(), v.getWord()))
+				return true;
+		return false;
+	}
+
 	public void addVocable(Vocable ... vocables)
 	{
 		for (Vocable vocable: vocables)
@@ -74,10 +90,12 @@ public class VocableDictionary implements Serializable {
 						}
 					}
 				}
+				else if(!exists(vocable))
+				{
+					vocableList.addAll(Arrays.asList(vocables));
+				}
 			}
 		}
-		vocableList.addAll(Arrays.asList(vocables));
+
 	}
-
-
 }
