@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class VocableDictionary implements Serializable {
@@ -34,6 +33,19 @@ public class VocableDictionary implements Serializable {
 			return new ArrayList<>();
 		}
 
+	}
+
+	public List<Vocable> findVocable(Vocable.Language language)
+	{
+		try{
+			return vocableList.stream().filter(
+					(vocable) -> (vocable.getLanguage().equals(language))
+			).collect(Collectors.toList());
+		}
+		catch (NullPointerException e)
+		{
+			return new ArrayList<>();
+		}
 	}
 
 	public void save(String path) throws IOException

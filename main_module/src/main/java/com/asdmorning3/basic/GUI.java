@@ -1,13 +1,10 @@
 package com.asdmorning3.basic;
 
-import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Dictionary;
-import java.util.List;
 import java.util.Objects;
 
 public class GUI {
