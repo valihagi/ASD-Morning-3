@@ -157,25 +157,21 @@ public class test001b {
 	@ParameterizedTest
 	@DisplayName("Find Vocable")
 	@MethodSource("stringStream")
-	void findVocable(String english, String german)
-	{
-		try{
+	void findVocable(String english, String german) {
+		try {
 			initVocables(english, german);
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 			return;
 		}
 		dictionary.addVocable(vocable1, vocable2);
 		String word_ = vocable1.getWord();
 		Vocable.Language language_ = vocable1.getLanguage();
-		assert(word_.length() >= 1);
+		assert (word_.length() >= 1);
 		assert (language_ != null);
 		List<Vocable> results = dictionary.findVocable(word_, language_);
 		System.out.println("found " + results.size() + " results");
-		for (Vocable vocable: results)
-		{
+		for (Vocable vocable : results) {
 			assert (vocable.equals(vocable1));
 		}
 	}
