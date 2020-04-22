@@ -5,6 +5,7 @@ import com.asdmorning3.test.InterfaceLanguages;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -165,4 +166,3 @@ public class VocableDictionary implements Serializable {
 	}
 
 	}
-}
