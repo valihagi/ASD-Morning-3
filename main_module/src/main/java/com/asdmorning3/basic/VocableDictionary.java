@@ -35,6 +35,19 @@ public class VocableDictionary implements Serializable {
 
 	}
 
+	public List<Vocable> findVocable(Vocable.Language language)
+	{
+		try{
+			return vocableList.stream().filter(
+					(vocable) -> (vocable.getLanguage().equals(language))
+			).collect(Collectors.toList());
+		}
+		catch (NullPointerException e)
+		{
+			return new ArrayList<>();
+		}
+	}
+
 	public void save(String path) throws IOException
 	{
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));

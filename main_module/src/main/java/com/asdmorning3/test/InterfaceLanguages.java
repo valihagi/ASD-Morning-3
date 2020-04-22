@@ -12,7 +12,7 @@ public class InterfaceLanguages {
 
 
     //example getString(InterfaceLanguages.Languages.DE, "add");
-    public String getString(Languages lang, String word) {
+    public static String getString(Languages lang, String word) {
         String fileName = "";
         switch (lang) {
             case DE:
