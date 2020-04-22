@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,12 @@ public class test001b {
 							Arguments.of(null, "wie"),
 							Arguments.of(null, null),
 							Arguments.of("", "hallo"));
+	}
+
+	static Stream<Arguments> tagsStream () {
+		return Stream.of(   Arguments.of("easy", Color.green),
+				Arguments.of("normal", Color.orange),
+				Arguments.of("difficult", Color.red));
 	}
 
 	Vocable vocable1 = null;
@@ -101,6 +108,7 @@ public class test001b {
 		assert(dictionary.getVocableList().size() == 2);
 		assert(dictionary.getVocableList().contains(vocable1));
 		assert(dictionary.getVocableList().contains(vocable2));
+
 		try{
 			vocable2.getTranslation(vocable2.getLanguage());
 		}
@@ -128,6 +136,7 @@ public class test001b {
 			}
 			assert(vocable1.getTranslation(vocable2.getLanguage()).equals(vocable2));
 			assert(vocable2.getTranslation(vocable1.getLanguage()).equals(vocable1));
+
 			try
 			{
 				dictionary.load("this_file_does_not_exist.exe");
@@ -150,25 +159,21 @@ public class test001b {
 	@ParameterizedTest
 	@DisplayName("Find Vocable")
 	@MethodSource("stringStream")
-	void findVocable(String english, String german)
-	{
-		try{
+	void findVocable(String english, String german) {
+		try {
 			initVocables(english, german);
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 			return;
 		}
 		dictionary.addVocable(vocable1, vocable2);
 		String word_ = vocable1.getWord();
 		Vocable.Language language_ = vocable1.getLanguage();
-		assert(word_.length() >= 1);
+		assert (word_.length() >= 1);
 		assert (language_ != null);
 		List<Vocable> results = dictionary.findVocable(word_, language_);
 		System.out.println("found " + results.size() + " results");
-		for (Vocable vocable: results)
-		{
+		for (Vocable vocable : results) {
 			assert (vocable.equals(vocable1));
 		}
 	}
@@ -188,5 +193,55 @@ public class test001b {
 		setUpDict();
 
 		System.out.println(Arrays.deepToString(dictionary.getTable()));
+  }
+
+  
+	@ParameterizedTest
+	@DisplayName("Tags Test")
+	@MethodSource("tagsStream")
+	void tagsTest(String description, Color color)
+	{
+		try
+		{
+			initVocables("Hey", "Hallo");
+		}
+		catch (IllegalArgumentException e)
+		{
+			System.out.println(e.getMessage());
+			return;
+		}
+
+		dictionary.addVocable(vocable1, vocable2);
+		var tag = dictionary.createTag(description, color);
+		dictionary.addTagToVocable(tag, dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0));
+		var tag2 = dictionary.createTag("verb", Color.black);
+		dictionary.addTagToVocable(tag2, dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0));
+
+		try{
+			dictionary.save("dictionary.save");
+		}
+		catch (IOException ex)
+		{
+			System.out.println("save did not work: " + ex.getMessage());
+		}
+		try
+		{
+			dictionary.load("dictionary.save");
+		} catch (ClassNotFoundException|IOException ex)
+		{
+			System.out.println("open did not work: " + ex.getMessage());
+			assert(false);
+		}
+
+		Vocable vocable = dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0);
+
+		assert(vocable.getTags().size() == 2);
+		assert (vocable.getTags().get(0).getDescription().equals(tag.getDescription()));
+		assert (vocable.getTags().get(1).getDescription().equals(tag2.getDescription()));
+		assert(dictionary.getTagByDescription("verb").getDescription().equals(tag2.getDescription()));
+
+		dictionary.removeTagToVocable(dictionary.getTagByDescription(description), vocable);
+		assert(vocable.getTags().size() == 1);
 	}
 }
+
