@@ -2,6 +2,7 @@ package com.asdmorning3.basic;
 
 import com.asdmorning3.test.InterfaceLanguages;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collector;
@@ -12,9 +13,12 @@ public class VocableDictionary implements Serializable {
 	public VocableDictionary()
 	{
 		vocableList = new HashSet<>();
+		tagsList = new ArrayList<Tags>();
 	}
 
 	private HashSet<Vocable> vocableList;
+
+	private ArrayList<Tags> tagsList;
 
 	public HashSet<Vocable> getVocableList()
 	{
@@ -45,6 +49,7 @@ public class VocableDictionary implements Serializable {
 	{
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
 		oos.writeObject(vocableList);
+		oos.writeObject(tagsList);
 		oos.close();
 	}
 
@@ -52,6 +57,7 @@ public class VocableDictionary implements Serializable {
 	{
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
 		vocableList = (HashSet<Vocable>) ois.readObject();
+		tagsList = (ArrayList<Tags>) ois.readObject();
 	}
 
 	public void load() throws IOException, ClassNotFoundException
@@ -117,6 +123,46 @@ public class VocableDictionary implements Serializable {
 				}
 			}
 		}
+
+		vocableList.addAll(Arrays.asList(vocables));
+	}
+
+	public Tags createTag(String description, Color color)
+	{
+		Tags tag = getTagByDescription(description);
+		if(tag != null)
+			return tag;
+
+		tag = new Tags(description, color);
+		tagsList.add(tag);
+		return tag;
+	}
+
+	public Tags getTagByDescription(String description)
+	{
+		for(Tags tag : tagsList)
+		{
+			if(tag.getDescription().equals(description))
+				return tag;
+		}
+
+		return null;
+	}
+
+	public ArrayList<Tags> getTagsList()
+	{
+		return tagsList;
+	}
+
+	public void addTagToVocable(Tags tag, Vocable vocable)
+	{
+		boolean addSuccess = vocable.addTag(tag);
+	}
+
+	public void removeTagToVocable(Tags tag, Vocable vocable)
+	{
+		boolean removeSuccess = vocable.removeTag(tag);
+	}
 
 	}
 }
