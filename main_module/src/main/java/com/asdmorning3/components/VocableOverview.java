@@ -4,7 +4,9 @@ import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
 
+import javax.print.DocFlavor;
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class VocableOverview {
 
 	private JFrame frame_;
 	private JPanel panel_;
-	private JTable table_;
+	private JTable table_, table_1;
 	private InterfaceLanguages.Languages interfaceLanguage_;
 	private ArrayList<List<Vocable>> vocable_list_;
 	private VocableTable tableModel_;
@@ -30,27 +32,23 @@ public class VocableOverview {
 
 	public VocableOverview(VocableDictionary dict, InterfaceLanguages.Languages interfaceLanguage)
 	{
+		// TODO implement changing header of JFrame according to InterfaceLanguage
 		interfaceLanguage_ = interfaceLanguage;
-		frame_ = new JFrame("test"/*InterfaceLanguages.getString(interfaceLanguage_, "overview"))*/);
-		vocable_list_ = new ArrayList<List<Vocable>>();
+		frame_ = new JFrame("Vocab Overview"/*InterfaceLanguages.getString(interfaceLanguage_, "overview"))*/);
 		columns_ = new String[Vocable.Language.class.getEnumConstants().length];
-		data_ = new Object[Vocable.Language.class.getEnumConstants().length][];
 		int i = 0;
 		for (Vocable.Language language: Vocable.Language.class.getEnumConstants())
 		{
-			System.out.println(i);
-			columns_[i] = language.toString();
-			try{
-				data_[i] = dict.findVocable(language).toArray();
-			}
-			catch (NullPointerException | IndexOutOfBoundsException ignored) {}
-			System.out.println(i);
-
+			columns_[i] = Vocable.getLanguageWord(language);
 			i++;
 		}
+		String data_[][] = dict.getTable();
 		table_ = new JTable(data_, columns_);
-		frame_.setSize(800, 800);
-		frame_.add(table_);
+
+
+		JScrollPane jps = new JScrollPane(table_);
+		frame_.setSize(Vocable.Language.class.getEnumConstants().length * 200, 400);
+		frame_.add(jps);
 		frame_.setVisible(true);
 	}
 

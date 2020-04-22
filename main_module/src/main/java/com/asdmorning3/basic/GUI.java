@@ -6,13 +6,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
+import com.asdmorning3.components.VocableOverview;
+import com.asdmorning3.test.InterfaceLanguages;
 
 public class GUI {
 
     VocableDictionary vcb;
     JFrame frame;
     JPanel pane;
-    JButton btnSubmit;
+    JButton btnSubmit, btnOverview;
     JTextField txtFld1;
     JTextField txtFld2;
     JLabel lblLang1;
@@ -29,6 +31,7 @@ public class GUI {
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         btnSubmit = new JButton("Add");
+        btnOverview = new JButton("Vocab Overview");
         txtFld1 = new JTextField();
         txtFld2 = new JTextField();
         lblLang1 = new JLabel("Language:");
@@ -94,6 +97,28 @@ public class GUI {
              }
         });
         pane.add(btnSubmit, c);
+
+        c.gridx = 2;
+        c.gridy = 0;
+        btnOverview.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new VocableOverview(vcb, InterfaceLanguages.Languages.DE);
+                        }
+                    });
+                }
+                catch(NullPointerException ex)
+                {
+                    System.out.println("one of the objects is null");
+                }
+            }
+        });
+        c.insets = new Insets(10, 0, 0, 55);
+        pane.add(btnOverview, c);
 
         frame.add(pane);
         frame.setVisible(true);
