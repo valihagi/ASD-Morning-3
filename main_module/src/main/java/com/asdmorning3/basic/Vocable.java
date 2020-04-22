@@ -3,7 +3,9 @@ package com.asdmorning3.basic;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Vocable implements Serializable {
 
@@ -15,6 +17,7 @@ public class Vocable implements Serializable {
 		this.word_ = word;
 		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
+		this.tags_ = new ArrayList<Tags>();
 	}
 
 	public enum Language {
@@ -27,6 +30,8 @@ public class Vocable implements Serializable {
 	private Language language_ ;
 
 	private HashMap<Language, Vocable> translation_;
+
+	private ArrayList<Tags> tags_;
 
 	public Vocable getTranslation(@NotNull Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
 	{
@@ -82,5 +87,46 @@ public class Vocable implements Serializable {
 	public boolean equals(Vocable vocable)
 	{
 		return vocable.getWord().equals(word_) && vocable.getLanguage().equals(language_);
+	}
+
+
+	public boolean addTag(Tags addTag)
+	{
+		for(Tags tag : tags_)
+		{
+			if(tag.getDescription().equals(addTag.getDescription()))
+			{
+				return false;
+			}
+		}
+		tags_.add(addTag);
+		return true;
+	}
+
+	public boolean removeTag(Tags removeTag)
+	{
+		for(Tags tag : tags_)
+		{
+			if(tag.getDescription().equals(removeTag.getDescription()))
+			{
+				tags_.remove(tag);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public ArrayList<Tags> getTags() { return tags_; }
+
+	public boolean hasTag(Tags hasTag)
+	{
+		for(Tags tag : tags_)
+		{
+			if(tag.getDescription().equals(hasTag.getDescription()))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
