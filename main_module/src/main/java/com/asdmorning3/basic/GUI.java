@@ -1,24 +1,29 @@
 package com.asdmorning3.basic;
 
+
 import com.asdmorning3.test.InterfaceLanguages;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Objects;
+import com.asdmorning3.components.VocableOverview;
+import com.asdmorning3.test.InterfaceLanguages;
 
 public class GUI {
 
     VocableDictionary vcb;
     JFrame frame;
     JPanel pane;
-    JButton btnSubmit;
+    JButton btnSubmit, btnOverview;
     //JButton btnSave;
     JMenuBar menuBar;
     JMenu menuFile;
@@ -42,6 +47,7 @@ public class GUI {
         vcb = v;
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        btnOverview = new JButton();
         btnSubmit = new JButton();
 
         menuBar = new JMenuBar();
@@ -133,6 +139,28 @@ public class GUI {
         });
         pane.add(btnSubmit, c);
 
+        c.gridx = 2;
+        c.gridy = 0;
+        btnOverview.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new VocableOverview(vcb, InterfaceLanguages.Languages.DE);
+                        }
+                    });
+                }
+                catch(NullPointerException ex)
+                {
+                    System.out.println("one of the objects is null");
+                }
+            }
+        });
+        c.insets = new Insets(10, 0, 0, 55);
+        pane.add(btnOverview, c);
+
         itemSave.addActionListener(actionEvent -> {
             try {
                 JFileChooser tosave = new JFileChooser();
@@ -207,6 +235,7 @@ public class GUI {
         lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
         lblWord2.setText(InterfaceLanguages.getString(lang, "word"));
         btnSubmit.setText(InterfaceLanguages.getString(lang, "add"));
+        btnOverview.setText(InterfaceLanguages.getString(lang, "overview"));
         itemSave.setText(InterfaceLanguages.getString(lang, "save"));
         frame.setTitle(InterfaceLanguages.getString(lang, "vocab-trainer"));
         menuFile.setText(InterfaceLanguages.getString(lang, "file"));

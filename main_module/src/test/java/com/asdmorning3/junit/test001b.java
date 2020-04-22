@@ -3,6 +3,7 @@ package com.asdmorning3.junit;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -176,6 +178,24 @@ public class test001b {
 		}
 	}
 
+	void setUpDict()
+	{
+		dictionary.addVocable(new Vocable("hello", Vocable.Language.ENG), new Vocable("hallo", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("test", Vocable.Language.ENG), new Vocable("Test", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("test1", Vocable.Language.ENG), new Vocable("Test1", Vocable.Language.GER));
+	}
+
+	@Test
+	@DisplayName("create Table")
+	void createTable()
+	{
+		dictionary = new VocableDictionary();
+		setUpDict();
+
+		System.out.println(Arrays.deepToString(dictionary.getTable()));
+  }
+
+  
 	@ParameterizedTest
 	@DisplayName("Tags Test")
 	@MethodSource("tagsStream")
@@ -222,7 +242,6 @@ public class test001b {
 
 		dictionary.removeTagToVocable(dictionary.getTagByDescription(description), vocable);
 		assert(vocable.getTags().size() == 1);
-
 	}
 }
 
