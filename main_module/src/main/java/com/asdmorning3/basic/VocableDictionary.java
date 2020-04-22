@@ -44,6 +44,7 @@ public class VocableDictionary implements Serializable {
 	{
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
 		oos.writeObject(vocableList);
+		oos.writeObject(tagsList);
 		oos.close();
 	}
 
@@ -51,6 +52,7 @@ public class VocableDictionary implements Serializable {
 	{
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
 		vocableList = (HashSet<Vocable>) ois.readObject();
+		tagsList = (ArrayList<Tags>) ois.readObject();
 	}
 
 	public void addVocable(Vocable ... vocables)
@@ -85,14 +87,29 @@ public class VocableDictionary implements Serializable {
 
 	public Tags createTag(String description, Color color)
 	{
+		Tags tag = getTagByDescription(description);
+		if(tag != null)
+			return tag;
+
+		tag = new Tags(description, color);
+		tagsList.add(tag);
+		return tag;
+	}
+
+	public Tags getTagByDescription(String description)
+	{
 		for(Tags tag : tagsList)
 		{
 			if(tag.getDescription().equals(description))
 				return tag;
 		}
-		Tags tag = new Tags(description, color);
-		tagsList.add(tag);
-		return tag;
+
+		return null;
+	}
+
+	public ArrayList<Tags> getTagsList()
+	{
+		return tagsList;
 	}
 
 	public void addTagToVocable(Tags tag, Vocable vocable)
@@ -104,7 +121,5 @@ public class VocableDictionary implements Serializable {
 	{
 		boolean removeSuccess = vocable.removeTag(tag);
 	}
-
-
 
 }
