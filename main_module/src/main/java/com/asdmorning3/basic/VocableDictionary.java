@@ -1,5 +1,7 @@
 package com.asdmorning3.basic;
 
+import com.asdmorning3.test.InterfaceLanguages;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collector;
@@ -30,7 +32,13 @@ public class VocableDictionary implements Serializable {
 		{
 			return new ArrayList<>();
 		}
+	}
 
+	public void save() throws IOException
+	{
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(System.getProperty("user.dir") + "/dictionary.save"));
+		oos.writeObject(vocableList);
+		oos.close();
 	}
 
 	public void save(String path) throws IOException
@@ -44,6 +52,19 @@ public class VocableDictionary implements Serializable {
 	{
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
 		vocableList = (HashSet<Vocable>) ois.readObject();
+	}
+
+	public void load() throws IOException, ClassNotFoundException
+	{
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(System.getProperty("user.dir") + "/dictionary.save"));
+			vocableList = (HashSet<Vocable>) ois.readObject();
+		}
+		catch (FileNotFoundException ex)
+		{
+			System.out.println("File not Found");
+			System.out.println(ex.toString());
+		}
 	}
 
 	public List<Vocable> getAllFromLanguage(Vocable.Language lang)

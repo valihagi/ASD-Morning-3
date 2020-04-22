@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +19,12 @@ public class GUI {
     JFrame frame;
     JPanel pane;
     JButton btnSubmit;
+    //JButton btnSave;
+    JMenuBar menuBar;
+    JMenu menuFile;
+    JMenuItem itemSave;
+    JMenuItem itemLoad;
+
     JTextField txtFld1;
     JTextField txtFld2;
     JLabel lblLang1;
@@ -30,21 +39,27 @@ public class GUI {
 
     public GUI(VocableDictionary v)
     {
-        frame = new JFrame("Vocabulary Trainer");
         vcb = v;
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        btnSubmit = new JButton("Add");
+        btnSubmit = new JButton();
+
+        menuBar = new JMenuBar();
+        menuFile = new JMenu();
+        itemSave = new JMenuItem();
+        itemLoad = new JMenuItem();
+        //btnSave = new JButton();
         txtFld1 = new JTextField();
         txtFld2 = new JTextField();
-        lang = InterfaceLanguages.Languages.EN;
         lblLang1 = new JLabel();
         comboBoxInterfaceLang = new JComboBox<>(InterfaceLanguages.Languages.class.getEnumConstants());
+        lang = (InterfaceLanguages.Languages) comboBoxInterfaceLang.getSelectedItem();
+        frame = new JFrame();
         lblLang2 = new JLabel();
         lblWord1 = new JLabel();
         lblWord2 = new JLabel();
         lblIntLang = new JLabel();
-        //getIntLang();
+        getIntLang();
         comboBoxLang1 = new JComboBox<>(Vocable.Language.values());
         comboBoxLang2 = new JComboBox<>(Vocable.Language.values());
 
@@ -61,8 +76,8 @@ public class GUI {
         comboBoxInterfaceLang.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                //lang = (InterfaceLanguages.Languages)comboBoxInterfaceLang.getSelectedItem();
-                //getIntLang();
+                lang = (InterfaceLanguages.Languages)comboBoxInterfaceLang.getSelectedItem();
+                getIntLang();
             }
         });
         c.gridx = 0;
@@ -118,7 +133,60 @@ public class GUI {
         });
         pane.add(btnSubmit, c);
 
-        frame.add(pane);
+        itemSave.addActionListener(actionEvent -> {
+            try {
+                JFileChooser tosave = new JFileChooser();
+                if(tosave.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION)
+                {
+                    vcb.save(tosave.getSelectedFile().getPath());
+                }
+
+            }
+            catch(NullPointerException | IOException ex)
+            {
+                System.out.println("one of the objects is null");
+            }
+        });
+        menuFile.add(itemSave);
+
+        itemLoad.addActionListener(actionEvent -> {
+            try {
+                JFileChooser toload = new JFileChooser();
+                if(toload.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
+                {
+                    vcb.load(toload.getSelectedFile().getPath());
+                }
+
+            }
+            catch(NullPointerException | IOException | ClassNotFoundException ex)
+            {
+                System.out.println("one of the objects is null");
+            }
+        });
+        menuFile.add(itemLoad);
+
+        menuBar.add(menuFile);
+
+        frame.add(menuBar, BorderLayout.NORTH);
+        frame.add(pane, BorderLayout.CENTER);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    JFileChooser tosave = new JFileChooser();
+                    if(tosave.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION)
+                    {
+                        vcb.save(tosave.getSelectedFile().getPath());
+                    }
+
+                }
+                catch(NullPointerException | IOException ex)
+                {
+                    System.out.println("one of the objects is null");
+                }
+                super.windowClosing(e);
+            }
+        });
         frame.setVisible(true);
     }
 
@@ -134,10 +202,14 @@ public class GUI {
     private void getIntLang()
     {
         lblIntLang.setText(InterfaceLanguages.getString(lang, "interfacelanguage"));
-        lblLang1.setText(InterfaceLanguages.getString(lang, "languages"));
-        lblLang2.setText(InterfaceLanguages.getString(lang, "languages"));
+        lblLang1.setText(InterfaceLanguages.getString(lang, "language"));
+        lblLang2.setText(InterfaceLanguages.getString(lang, "language"));
         lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
         lblWord2.setText(InterfaceLanguages.getString(lang, "word"));
         btnSubmit.setText(InterfaceLanguages.getString(lang, "add"));
+        itemSave.setText(InterfaceLanguages.getString(lang, "save"));
+        frame.setTitle(InterfaceLanguages.getString(lang, "vocab-trainer"));
+        menuFile.setText(InterfaceLanguages.getString(lang, "file"));
+        itemLoad.setText(InterfaceLanguages.getString(lang, "load"));
     }
 }
