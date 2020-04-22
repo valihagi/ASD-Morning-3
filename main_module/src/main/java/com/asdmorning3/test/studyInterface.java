@@ -44,6 +44,7 @@ class studyInterface {
                 else
                     list = new JList(german);
 
+
                 d.add(list);
                 d.setVisible(true);
             }
