@@ -3,7 +3,6 @@ package com.asdmorning3.junit;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -159,43 +158,29 @@ public class test001b {
 	@ParameterizedTest
 	@DisplayName("Find Vocable")
 	@MethodSource("stringStream")
-	void findVocable(String english, String german) {
-		try {
+	void findVocable(String english, String german)
+	{
+		try{
 			initVocables(english, german);
-		} catch (IllegalArgumentException e) {
+		}
+		catch (IllegalArgumentException e)
+		{
 			System.out.println(e.getMessage());
 			return;
 		}
 		dictionary.addVocable(vocable1, vocable2);
 		String word_ = vocable1.getWord();
 		Vocable.Language language_ = vocable1.getLanguage();
-		assert (word_.length() >= 1);
+		assert(word_.length() >= 1);
 		assert (language_ != null);
 		List<Vocable> results = dictionary.findVocable(word_, language_);
 		System.out.println("found " + results.size() + " results");
-		for (Vocable vocable : results) {
+		for (Vocable vocable: results)
+		{
 			assert (vocable.equals(vocable1));
 		}
 	}
 
-	void setUpDict()
-	{
-		dictionary.addVocable(new Vocable("hello", Vocable.Language.ENG), new Vocable("hallo", Vocable.Language.GER));
-		dictionary.addVocable(new Vocable("test", Vocable.Language.ENG), new Vocable("Test", Vocable.Language.GER));
-		dictionary.addVocable(new Vocable("test1", Vocable.Language.ENG), new Vocable("Test1", Vocable.Language.GER));
-	}
-
-	@Test
-	@DisplayName("create Table")
-	void createTable()
-	{
-		dictionary = new VocableDictionary();
-		setUpDict();
-
-		System.out.println(Arrays.deepToString(dictionary.getTable()));
-  }
-
-  
 	@ParameterizedTest
 	@DisplayName("Tags Test")
 	@MethodSource("tagsStream")
@@ -242,6 +227,64 @@ public class test001b {
 
 		dictionary.removeTagToVocable(dictionary.getTagByDescription(description), vocable);
 		assert(vocable.getTags().size() == 1);
+
+	}
+
+	@ParameterizedTest
+	@DisplayName("Rating Test")
+	@MethodSource("tagsStream")
+	void ratingTest(String description, Color color)
+	{
+		vocable1 = null;
+		vocable2 = null;
+		vocable3 = null;
+		dictionary = new VocableDictionary();
+		String errorMessage = null;
+		try{
+			vocable1 = new Vocable("Hello", Vocable.Language.ENG);
+		}
+		catch (IllegalArgumentException e)
+		{
+			errorMessage = "vocable 1 triggered: " + e.getMessage();
+			throw new IllegalArgumentException(errorMessage);
+		}
+		try{
+			vocable2 = new Vocable("Hallo", Vocable.Language.GER);
+
+		}
+		catch (IllegalArgumentException e)
+		{
+			errorMessage = "vocable 2 triggered: " + e.getMessage();
+			throw new IllegalArgumentException(errorMessage);
+		}
+		try{
+			vocable3 = new Vocable("Hey", Vocable.Language.ENG);
+		}
+		catch (IllegalArgumentException ignored) { }
+
+		dictionary.addVocable(vocable1,vocable2,vocable3);
+
+		vocable1.changeRating(Vocable.Rating.VERY_DIFFICULT);
+		vocable3.changeRating(Vocable.Rating.DIFFICULT);
+
+		ArrayList<Vocable.Rating> tempRatings = new ArrayList<>();
+		tempRatings.add(Vocable.Rating.NORMAL);
+		tempRatings.add(Vocable.Rating.DIFFICULT);
+		tempRatings.add(Vocable.Rating.VERY_DIFFICULT);
+
+		ArrayList<Vocable> sortedList = dictionary.getVocablesSortedAsc(dictionary.getVocableList());
+		int index = 0;
+		for(Vocable vocable : sortedList)
+		{
+			assert(vocable.getRating() == tempRatings.get(index));
+			index++;
+		}
+
+		vocable2.changeRating(Vocable.Rating.DIFFICULT);
+
+		ArrayList<Vocable> list = dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, dictionary.getVocableList());
+
+		assert (dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, dictionary.getVocableList()).size() == 2);
+
 	}
 }
-

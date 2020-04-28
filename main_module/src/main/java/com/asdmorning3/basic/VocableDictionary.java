@@ -1,17 +1,13 @@
 package com.asdmorning3.basic;
 
-import com.asdmorning3.test.InterfaceLanguages;
-
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import com.asdmorning3.basic.Vocable;
 
 public class VocableDictionary implements Serializable {
 
@@ -41,55 +37,7 @@ public class VocableDictionary implements Serializable {
 		{
 			return new ArrayList<>();
 		}
-	}
 
-	public void save() throws IOException
-	{
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(System.getProperty("user.dir") + "/dictionary.save"));
-		oos.writeObject(vocableList);
-		oos.close();
-	}
-
-	public List<Vocable> findVocable(Vocable.Language language)
-	{
-		try{
-			return vocableList.stream().filter(
-					(vocable) -> (vocable.getLanguage().equals(language))
-			).collect(Collectors.toList());
-		}
-		catch (NullPointerException e)
-		{
-			return new ArrayList<>();
-		}
-	}
-
-	public List<String> findWord(Vocable.Language language)
-	{
-		try{
-			return vocableList.stream().filter(
-					(vocable) -> (vocable.getLanguage().equals(language))
-			).map(Vocable::getWord).collect(Collectors.toList());
-		}
-		catch (NullPointerException e)
-		{
-			return new ArrayList<>();
-		}
-	}
-
-	public String[][] getTable()
-	{
-		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
-		int row = 0;
-		int col = 0;
-		for (Vocable vocab : findVocable(Vocable.Language.GER)) {
-			col = 0;
-			for (Vocable.Language language : Vocable.Language.class.getEnumConstants()) {
-				table[row][col] = vocab.getWord(language);
-				col++;
-			}
-			row++;
-		}
-		return table;
 	}
 
 	public void save(String path) throws IOException
@@ -107,47 +55,10 @@ public class VocableDictionary implements Serializable {
 		tagsList = (ArrayList<Tags>) ois.readObject();
 	}
 
-	public void load() throws IOException, ClassNotFoundException
-	{
-		try {
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(System.getProperty("user.dir") + "/dictionary.save"));
-			vocableList = (HashSet<Vocable>) ois.readObject();
-		}
-		catch (FileNotFoundException ex)
-		{
-			System.out.println("File not Found");
-			System.out.println(ex.toString());
-		}
-	}
-
-	public List<Vocable> getAllFromLanguage(Vocable.Language lang)
-	{
-		List<Vocable> vocables = new ArrayList<>();
-		for(Vocable v : vocableList)
-		{
-			if(v.getLanguage() == lang)
-				vocables.add(v);
-		}
-		return vocables;
-	}
-
-	public boolean exists(Vocable v)
-	{
-		for(Vocable d : getAllFromLanguage(v.getLanguage()))
-			if(Objects.equals(d.getWord(), v.getWord()))
-				return true;
-		return false;
-	}
-
 	public void addVocable(Vocable ... vocables)
 	{
-		boolean german = false;
 		for (Vocable vocable: vocables)
 		{
-			if (vocable.getLanguage() == Vocable.Language.GER)
-			{
-				german = true;
-			}
 			for (Vocable translation: vocables)
 			{
 				if (vocable.getLanguage() != translation.getLanguage())
@@ -169,21 +80,7 @@ public class VocableDictionary implements Serializable {
 						}
 					}
 				}
-				else if(!exists(vocable))
-				{
-					vocableList.addAll(Arrays.asList(vocables));
-				}
 			}
-		}
-		ArrayList<Vocable> list = new ArrayList<Vocable>(Arrays.asList(vocables));
-		if (!german)
-		{
-			Vocable voc1 = new Vocable("", Vocable.Language.GER);
-			for (Vocable vcb : list)
-			{
-				vcb.addTranslation(voc1);
-			}
-			list.add(voc1);
 		}
 		vocableList.addAll(Arrays.asList(vocables));
 	}
@@ -217,13 +114,75 @@ public class VocableDictionary implements Serializable {
 
 	public void addTagToVocable(Tags tag, Vocable vocable)
 	{
-		boolean addSuccess = vocable.addTag(tag);
+		vocable.addTag(tag);
 	}
 
 	public void removeTagToVocable(Tags tag, Vocable vocable)
 	{
-		boolean removeSuccess = vocable.removeTag(tag);
+		vocable.removeTag(tag);
 	}
 
+	public ArrayList<Vocable> getVocablesByTag(Tags tag, HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.hasTag(tag))
+				vocables.add(vocable);
+		}
+		return  vocables;
 	}
+
+	public void changeVocableRating(Vocable.Rating rating, Vocable vocable)
+	{
+		vocable.changeRating(rating);
+	}
+
+	public Vocable.Rating getVocableRating(Vocable vocable)
+	{
+		return vocable.getRating();
+	}
+
+	public ArrayList<Vocable> getVocablesSortedAsc(HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+		for(Vocable.Rating rating : Vocable.Rating.values())
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(rating))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesSortedDesc(HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(int index = Vocable.Rating.values().length; index >= 0; index--)
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(Vocable.Rating.values()[index]))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesByRating(Vocable.Rating rating, HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.getRating().equals(rating))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
 }
