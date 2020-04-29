@@ -9,21 +9,28 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Dictionary;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 public class GUI {
 
     VocableDictionary vcb;
     JFrame frame;
+    JTabbedPane tabbedPane;
     JPanel pane;
     JButton btnSubmit;
-    //JButton btnSave;
     JMenuBar menuBar;
+
     JMenu menuFile;
     JMenuItem itemSave;
     JMenuItem itemLoad;
+
+    JMenu menuInterface;
+    JMenuItem itemStudy;
+    JMenuItem itemOverview;
+
+    JMenu menuLang;
+    HashMap<JMenuItem, InterfaceLanguages.Languages> itemLangs;
 
     JTextField txtFld1;
     JTextField txtFld2;
@@ -34,15 +41,22 @@ public class GUI {
     JLabel lblIntLang;
     public JComboBox<Vocable.Language> comboBoxLang1;
     public JComboBox<Vocable.Language> comboBoxLang2;
-    public JComboBox<InterfaceLanguages.Languages> comboBoxInterfaceLang;
     InterfaceLanguages.Languages lang;
 
     public GUI(VocableDictionary v)
     {
         vcb = v;
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         btnSubmit = new JButton();
+
+        menuInterface = new JMenu();
+        itemStudy = new JMenuItem();
+        itemOverview = new JMenuItem();
+
+        menuLang = new JMenu();
+        itemLangs = new HashMap<>();
 
         menuBar = new JMenuBar();
         menuFile = new JMenu();
@@ -52,14 +66,12 @@ public class GUI {
         txtFld1 = new JTextField();
         txtFld2 = new JTextField();
         lblLang1 = new JLabel();
-        comboBoxInterfaceLang = new JComboBox<>(InterfaceLanguages.Languages.class.getEnumConstants());
-        lang = (InterfaceLanguages.Languages) comboBoxInterfaceLang.getSelectedItem();
+        lang = (InterfaceLanguages.Languages) InterfaceLanguages.Languages.DE;
         frame = new JFrame();
         lblLang2 = new JLabel();
         lblWord1 = new JLabel();
         lblWord2 = new JLabel();
         lblIntLang = new JLabel();
-        getIntLang();
         comboBoxLang1 = new JComboBox<>(Vocable.Language.values());
         comboBoxLang2 = new JComboBox<>(Vocable.Language.values());
 
@@ -72,14 +84,6 @@ public class GUI {
         c.gridx = 1;
         c.insets = new Insets(0,0,11,0);
         c.anchor = GridBagConstraints.NORTHWEST;
-        pane.add(comboBoxInterfaceLang, c);
-        comboBoxInterfaceLang.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                lang = (InterfaceLanguages.Languages)comboBoxInterfaceLang.getSelectedItem();
-                getIntLang();
-            }
-        });
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -114,6 +118,9 @@ public class GUI {
         c.insets = new Insets(10, 0, 0, 55);
         pane.add(txtFld2, c);
 
+        //study interface
+        //vocabulary overview
+
         c.gridx = 1;
         c.gridy++;
         btnSubmit.addActionListener(new ActionListener() {
@@ -127,7 +134,7 @@ public class GUI {
                 }
                 catch(NullPointerException ex)
                 {
-                    System.out.println("one of the objects is null");
+                    System.out.println("(btnGUI)one of the objects is null");
                 }
              }
         });
@@ -144,7 +151,7 @@ public class GUI {
             }
             catch(NullPointerException | IOException ex)
             {
-                System.out.println("one of the objects is null");
+                System.out.println("(menuSaveGUI)one of the objects is null");
             }
         });
         menuFile.add(itemSave);
@@ -160,15 +167,48 @@ public class GUI {
             }
             catch(NullPointerException | IOException | ClassNotFoundException ex)
             {
-                System.out.println("one of the objects is null");
+                System.out.println("(menuLoadGUI)one of the objects is null");
             }
         });
         menuFile.add(itemLoad);
 
+        itemOverview.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //TODO: add new pane to the tabbed pane
+            }
+        });
+        menuInterface.add(itemOverview);
+
+        itemStudy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //TODO: add new pane to the tabbed pane
+            }
+        });
+        menuInterface.add(itemStudy);
+
+        for(InterfaceLanguages.Languages i : InterfaceLanguages.Languages.class.getEnumConstants())
+        {
+            JMenuItem temp = new JMenuItem(i.toString());
+            temp.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    lang = itemLangs.get(temp);
+                    setIntLang(lang);
+                }
+            });
+            itemLangs.put(temp, i);
+            menuLang.add(temp);
+        }
+
         menuBar.add(menuFile);
+        menuBar.add(menuInterface);
+        menuBar.add(menuLang);
 
         frame.add(menuBar, BorderLayout.NORTH);
-        frame.add(pane, BorderLayout.CENTER);
+        tabbedPane.addTab("Tab " + (tabbedPane.getTabCount() + 1), pane);
+        frame.add(tabbedPane, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -182,11 +222,12 @@ public class GUI {
                 }
                 catch(NullPointerException | IOException ex)
                 {
-                    System.out.println("one of the objects is null");
+                    System.out.println("(windowCloseGUI)one of the objects is null");
                 }
                 super.windowClosing(e);
             }
         });
+        setIntLang(this.lang);
         frame.setVisible(true);
     }
 
@@ -199,9 +240,9 @@ public class GUI {
         GUI g = new GUI(d);
     }
 
-    private void getIntLang()
+    private void setIntLang(InterfaceLanguages.Languages lang)
     {
-        lblIntLang.setText(InterfaceLanguages.getString(lang, "interfacelanguage"));
+        menuLang.setText(InterfaceLanguages.getString(lang, "interfacelanguage"));
         lblLang1.setText(InterfaceLanguages.getString(lang, "language"));
         lblLang2.setText(InterfaceLanguages.getString(lang, "language"));
         lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
@@ -211,5 +252,8 @@ public class GUI {
         frame.setTitle(InterfaceLanguages.getString(lang, "vocab-trainer"));
         menuFile.setText(InterfaceLanguages.getString(lang, "file"));
         itemLoad.setText(InterfaceLanguages.getString(lang, "load"));
+        menuInterface.setText(InterfaceLanguages.getString(lang, "interface"));
+        //itemOverview.setText(InterfaceLanguages.getString(lang, ""));
+        //itemStudy.setText(InterfaceLanguages.getString(lang, ""));
     }
 }

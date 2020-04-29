@@ -19,19 +19,4 @@ public class test001a {
 		GUI g = new GUI(dictionary);
 		assert(g.comboBoxLang1.getItemCount() == 2);
 	}
-
-	@Test
-	@DisplayName("test Interface Language Change")
-	void testIntLangChange()
-	{
-		VocableDictionary dictionary = new VocableDictionary();
-		dictionary.addVocable(new Vocable("hallo", Vocable.Language.GER),
-				new Vocable("hello", Vocable.Language.ENG));
-		GUI g = new GUI(dictionary);
-		g.comboBoxInterfaceLang.setSelectedIndex(0);
-		Object o1 = g.comboBoxInterfaceLang.getSelectedItem();
-		g.comboBoxInterfaceLang.setSelectedIndex(1);
-		Object o2 = g.comboBoxInterfaceLang.getSelectedItem();
-		assert(o1 != o2);
-	}
 }
