@@ -1,7 +1,6 @@
 package com.asdmorning3.test;
 
 import java.io.*;
-import java.net.URL;
 
 public class InterfaceLanguages {
 
@@ -13,22 +12,22 @@ public class InterfaceLanguages {
 
     //example getString(InterfaceLanguages.Languages.DE, "add");
     public String getString(Languages lang, String word) {
-        URL fileName = null;
+        String fileName = "";
         switch (lang) {
             case DE:
-                fileName = InterfaceLanguages.class.getResource("../../../de.conf");
+                fileName = System.getProperty("user.dir") + "/main_module/src/main/resources/de.conf";
                 break;
             case EN:
-                fileName = InterfaceLanguages.class.getResource("../../../en.conf");
+                fileName = System.getProperty("user.dir") + "/main_module/src/main/resources/en.conf";
                 break;
             case FR:
-                fileName = InterfaceLanguages.class.getResource("../../../fr.conf");
+                fileName = System.getProperty("user.dir") + "/main_module/src/main/resources/fr.conf";
                 break;
             default:
                 System.out.println("error: language not found");
         }
 
-        File file = new File(fileName.getPath());
+        File file = new File(fileName);
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
