@@ -54,7 +54,7 @@ public class GUI {
         tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        btnOverview = new JButton();
+        //btnOverview = new JButton();
         btnSubmit = new JButton();
 
         menuInterface = new JMenu();
@@ -148,7 +148,7 @@ public class GUI {
 
         c.gridx = 2;
         c.gridy = 0;
-        btnOverview.addActionListener(new ActionListener() {
+        /*btnOverview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
@@ -164,9 +164,9 @@ public class GUI {
                     System.out.println("one of the objects is null");
                 }
             }
-        });
+        });*/
         c.insets = new Insets(10, 0, 0, 55);
-        pane.add(btnOverview, c);
+        //pane.add(btnOverview, c);
 
         itemSave.addActionListener(actionEvent -> {
             try {
@@ -270,16 +270,16 @@ public class GUI {
 
     private void setIntLang(InterfaceLanguages.Languages lang)
     {
-        lblIntLang.setText(languages.getString(lang, "interfacelanguage"));
+        menuLang.setText(languages.getString(lang, "interfacelanguage"));
         lblLang1.setText(languages.getString(lang, "language"));
         lblLang2.setText(languages.getString(lang, "language"));
         lblWord1.setText(languages.getString(lang, "word"));
         lblWord2.setText(languages.getString(lang, "word"));
         btnSubmit.setText(languages.getString(lang, "add"));
-        btnOverview.setText(languages.getString(lang, "overview"));
         itemSave.setText(languages.getString(lang, "save"));
         frame.setTitle(languages.getString(lang, "vocab-trainer"));
         menuFile.setText(languages.getString(lang, "file"));
         itemLoad.setText(languages.getString(lang, "load"));
+        menuInterface.setText(languages.getString(lang, "interface"));
     }
 }
