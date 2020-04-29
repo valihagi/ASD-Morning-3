@@ -1,16 +1,14 @@
 package com.asdmorning3.test;
-import com.asdmorning3.basic.Vocable;
-import com.asdmorning3.basic.VocableDictionary;
-import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.basic.GUI;
-
-import javax.swing.*;
+import com.asdmorning3.basic.VocableDictionary;
 
 public class main {
 
 	public static void main (String[] args)
 	{
-		studyInterface Interface = new studyInterface();
+		VocableDictionary vocableDictionary = new VocableDictionary();
+		GUI gui = new GUI(vocableDictionary);
+		return;
 	}
 
 }
