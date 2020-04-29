@@ -94,7 +94,6 @@ public class Edit {
                 try {
                     vocable = vocab_dic.replace(vocable.getWord(),
                             txtFld1.getText(), vocable.getLanguage());
-                    //vc.editTranslation((Vocable.Language) comboBoxLang1.getSelectedItem(), txtFld1.getText());
                 }
                 catch(NullPointerException ex)
                 {
@@ -109,18 +108,6 @@ public class Edit {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                /*try {
-                    JFileChooser tosave = new JFileChooser();
-                    if(tosave.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION)
-                    {
-                        vcb.save(tosave.getSelectedFile().getPath());
-                    }
-
-                }
-                catch(NullPointerException | IOException ex)
-                {
-                    System.out.println("one of the objects is null");
-                }*/
                 super.windowClosing(e);
             }
         });
