@@ -1,7 +1,6 @@
 package com.asdmorning3.basic;
 
 import com.asdmorning3.test.InterfaceLanguages;
-import javafx.scene.control.Alert;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,9 +22,11 @@ public class Edit {
     JLabel lblWord1;
     public JComboBox<Vocable.Language> comboBoxLang1;
     InterfaceLanguages.Languages lang;
+    InterfaceLanguages languages;
 
     public Edit(VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang)
     {
+        languages = new InterfaceLanguages();
         vocab_dic = v;
         vocable = vc;
         pane = new JPanel(new GridBagLayout());
@@ -124,9 +125,9 @@ public class Edit {
 
     public void setIntLang(InterfaceLanguages.Languages lang)
     {
-        lblLang1.setText(InterfaceLanguages.getString(lang, "language"));
-        lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
-        btnSubmit.setText(InterfaceLanguages.getString(lang, "save"));
-        frame.setTitle(InterfaceLanguages.getString(lang, "edit"));
+        lblLang1.setText(languages.getString(lang, "language"));
+        lblWord1.setText(languages.getString(lang, "word"));
+        btnSubmit.setText(languages.getString(lang, "save"));
+        frame.setTitle(languages.getString(lang, "edit"));
     }
 }

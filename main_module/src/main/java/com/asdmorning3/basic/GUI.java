@@ -1,5 +1,7 @@
 package com.asdmorning3.basic;
 
+
+import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
 
 import javax.swing.*;
@@ -11,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI {
 
@@ -24,6 +27,7 @@ public class GUI {
     JMenu menuFile;
     JMenuItem itemSave;
     JMenuItem itemLoad;
+    InterfaceLanguages languages;
 
     JMenu menuInterface;
     JMenuItem itemStudy;
@@ -45,10 +49,12 @@ public class GUI {
 
     public GUI(VocableDictionary v)
     {
+        languages = new InterfaceLanguages();
         vcb = v;
         tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        btnOverview = new JButton();
         btnSubmit = new JButton();
 
         menuInterface = new JMenu();
@@ -140,6 +146,28 @@ public class GUI {
         });
         pane.add(btnSubmit, c);
 
+        c.gridx = 2;
+        c.gridy = 0;
+        btnOverview.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new VocableOverview(vcb, InterfaceLanguages.Languages.DE);
+                        }
+                    });
+                }
+                catch(NullPointerException ex)
+                {
+                    System.out.println("one of the objects is null");
+                }
+            }
+        });
+        c.insets = new Insets(10, 0, 0, 55);
+        pane.add(btnOverview, c);
+
         itemSave.addActionListener(actionEvent -> {
             try {
                 JFileChooser tosave = new JFileChooser();
@@ -167,7 +195,7 @@ public class GUI {
             }
             catch(NullPointerException | IOException | ClassNotFoundException ex)
             {
-                System.out.println("(menuLoadGUI)one of the objects is null");
+                System.out.println("one of the objects is null");
             }
         });
         menuFile.add(itemLoad);
@@ -242,18 +270,16 @@ public class GUI {
 
     private void setIntLang(InterfaceLanguages.Languages lang)
     {
-        menuLang.setText(InterfaceLanguages.getString(lang, "interfacelanguage"));
-        lblLang1.setText(InterfaceLanguages.getString(lang, "language"));
-        lblLang2.setText(InterfaceLanguages.getString(lang, "language"));
-        lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
-        lblWord2.setText(InterfaceLanguages.getString(lang, "word"));
-        btnSubmit.setText(InterfaceLanguages.getString(lang, "add"));
-        itemSave.setText(InterfaceLanguages.getString(lang, "save"));
-        frame.setTitle(InterfaceLanguages.getString(lang, "vocab-trainer"));
-        menuFile.setText(InterfaceLanguages.getString(lang, "file"));
-        itemLoad.setText(InterfaceLanguages.getString(lang, "load"));
-        menuInterface.setText(InterfaceLanguages.getString(lang, "interface"));
-        //itemOverview.setText(InterfaceLanguages.getString(lang, ""));
-        //itemStudy.setText(InterfaceLanguages.getString(lang, ""));
+        lblIntLang.setText(languages.getString(lang, "interfacelanguage"));
+        lblLang1.setText(languages.getString(lang, "language"));
+        lblLang2.setText(languages.getString(lang, "language"));
+        lblWord1.setText(languages.getString(lang, "word"));
+        lblWord2.setText(languages.getString(lang, "word"));
+        btnSubmit.setText(languages.getString(lang, "add"));
+        btnOverview.setText(languages.getString(lang, "overview"));
+        itemSave.setText(languages.getString(lang, "save"));
+        frame.setTitle(languages.getString(lang, "vocab-trainer"));
+        menuFile.setText(languages.getString(lang, "file"));
+        itemLoad.setText(languages.getString(lang, "load"));
     }
 }

@@ -1,12 +1,9 @@
 package com.asdmorning3.basic;
 
-import com.asdmorning3.test.InterfaceLanguages;
-
 import java.awt.*;
 import java.io.*;
-import java.util.*;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class VocableDictionary implements Serializable {
@@ -44,6 +41,48 @@ public class VocableDictionary implements Serializable {
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(System.getProperty("user.dir") + "/dictionary.save"));
 		oos.writeObject(vocableList);
 		oos.close();
+	}
+
+	public List<Vocable> findVocable(Vocable.Language language)
+	{
+		try{
+			return vocableList.stream().filter(
+					(vocable) -> (vocable.getLanguage().equals(language))
+			).collect(Collectors.toList());
+		}
+		catch (NullPointerException e)
+		{
+			return new ArrayList<>();
+		}
+	}
+
+	public List<String> findWord(Vocable.Language language)
+	{
+		try{
+			return vocableList.stream().filter(
+					(vocable) -> (vocable.getLanguage().equals(language))
+			).map(Vocable::getWord).collect(Collectors.toList());
+		}
+		catch (NullPointerException e)
+		{
+			return new ArrayList<>();
+		}
+	}
+
+	public String[][] getTable()
+	{
+		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
+		int row = 0;
+		int col = 0;
+		for (Vocable vocab : findVocable(Vocable.Language.GER)) {
+			col = 0;
+			for (Vocable.Language language : Vocable.Language.class.getEnumConstants()) {
+				table[row][col] = vocab.getWord(language);
+				col++;
+			}
+			row++;
+		}
+		return table;
 	}
 
 	public void save(String path) throws IOException
@@ -116,8 +155,13 @@ public class VocableDictionary implements Serializable {
 
 	public void addVocable(Vocable ... vocables)
 	{
+		boolean german = false;
 		for (Vocable vocable: vocables)
 		{
+			if (vocable.getLanguage() == Vocable.Language.GER)
+			{
+				german = true;
+			}
 			for (Vocable translation: vocables)
 			{
 				if (vocable.getLanguage() != translation.getLanguage())
@@ -145,7 +189,16 @@ public class VocableDictionary implements Serializable {
 				}
 			}
 		}
-
+		ArrayList<Vocable> list = new ArrayList<Vocable>(Arrays.asList(vocables));
+		if (!german)
+		{
+			Vocable voc1 = new Vocable("", Vocable.Language.GER);
+			for (Vocable vcb : list)
+			{
+				vcb.addTranslation(voc1);
+			}
+			list.add(voc1);
+		}
 		vocableList.addAll(Arrays.asList(vocables));
 	}
 
@@ -186,4 +239,4 @@ public class VocableDictionary implements Serializable {
 		boolean removeSuccess = vocable.removeTag(tag);
 	}
 
-	}
+}
