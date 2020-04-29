@@ -29,6 +29,14 @@ public class test001b {
 		return Stream.of(   Arguments.of("easy", Color.green),
 				Arguments.of("normal", Color.orange),
 				Arguments.of("difficult", Color.red));
+
+	}
+
+	static Stream<Arguments> ratingStream () {
+		return Stream.of(   Arguments.of(Vocable.Rating.NORMAL, Vocable.Rating.DIFFICULT, Vocable.Rating.VERY_EASY),
+				Arguments.of(Vocable.Rating.VERY_DIFFICULT, Vocable.Rating.EASY, Vocable.Rating.VERY_DIFFICULT),
+				Arguments.of(Vocable.Rating.EASY, Vocable.Rating.NORMAL, Vocable.Rating.VERY_EASY));
+
 	}
 
 	Vocable vocable1 = null;
@@ -232,8 +240,8 @@ public class test001b {
 
 	@ParameterizedTest
 	@DisplayName("Rating Test")
-	@MethodSource("tagsStream")
-	void ratingTest(String description, Color color)
+	@MethodSource("ratingStream")
+	void ratingTest(Vocable.Rating rating1, Vocable.Rating rating2, Vocable.Rating rating3)
 	{
 		vocable1 = null;
 		vocable2 = null;
@@ -264,27 +272,42 @@ public class test001b {
 
 		dictionary.addVocable(vocable1,vocable2,vocable3);
 
-		vocable1.changeRating(Vocable.Rating.VERY_DIFFICULT);
-		vocable3.changeRating(Vocable.Rating.DIFFICULT);
 
-		ArrayList<Vocable.Rating> tempRatings = new ArrayList<>();
-		tempRatings.add(Vocable.Rating.NORMAL);
-		tempRatings.add(Vocable.Rating.DIFFICULT);
-		tempRatings.add(Vocable.Rating.VERY_DIFFICULT);
+		vocable1.changeRating(rating1);
+		vocable2.changeRating(rating2);
+		vocable3.changeRating(rating3);
+
+		assert(vocable1.getRating() == rating1);
 
 		ArrayList<Vocable> sortedList = dictionary.getVocablesSortedAsc(dictionary.getVocableList());
+
 		int index = 0;
 		for(Vocable vocable : sortedList)
 		{
-			assert(vocable.getRating() == tempRatings.get(index));
-			index++;
+			int temp = vocable.getRating().ordinal();
+			assert(temp >= index);
+			index = temp;
 		}
 
-		vocable2.changeRating(Vocable.Rating.DIFFICULT);
+		sortedList = dictionary.getVocablesSortedDesc(dictionary.getVocableList());
 
-		ArrayList<Vocable> list = dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, dictionary.getVocableList());
+		index = 6;
+		for(Vocable vocable : sortedList)
+		{
+			int temp = vocable.getRating().ordinal();
+			assert(temp <= index);
+			index = temp;
+		}
+
+		vocable1.changeRating(Vocable.Rating.DIFFICULT);
+		vocable2.changeRating(Vocable.Rating.DIFFICULT);
+		vocable3.changeRating(Vocable.Rating.NORMAL);
+
+		ArrayList<Vocable> list = dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, sortedList);
 
 		assert (dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, dictionary.getVocableList()).size() == 2);
+
+
 
 	}
 }
