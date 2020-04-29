@@ -1,6 +1,7 @@
 package com.asdmorning3.basic;
 
 import com.asdmorning3.test.InterfaceLanguages;
+import javafx.scene.control.Alert;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,12 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.Objects;
 
 public class Edit {
 
-    VocableDictionary vcb;
+    VocableDictionary vocab_dic;
     Vocable vocable;
     JFrame frame;
     JPanel pane;
@@ -27,8 +26,7 @@ public class Edit {
 
     public Edit(VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang)
     {
-
-        vcb = v;
+        vocab_dic = v;
         vocable = vc;
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -39,13 +37,12 @@ public class Edit {
         lang = int_lang;
         frame = new JFrame();
         lblWord1 = new JLabel();
-        getIntLang();
+        setIntLang(this.lang);
         comboBoxLang1 = new JComboBox<>(Vocable.Language.class.getEnumConstants());
         comboBoxLang1.setSelectedItem(vocable.getLanguage());
 
         frame.setSize(300, 300);
 
-        getIntLang();
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -61,7 +58,14 @@ public class Edit {
             public void actionPerformed(ActionEvent actionEvent) {
                 try{
                     if(!((Vocable.Language)comboBoxLang1.getSelectedItem()).equals(vocable.getLanguage()))
-                        txtFld1.setText((vocable = vocable.getTranslation((Vocable.Language)comboBoxLang1.getSelectedItem())).getWord());
+                    {
+                        txtFld1.setText((vocable.getTranslation((Vocable.Language)comboBoxLang1.getSelectedItem())).getWord());
+                        vocable = vocable.getTranslation((Vocable.Language)comboBoxLang1.getSelectedItem());
+                    }
+                }
+                catch (NullPointerException ex)
+                {
+                    txtFld1.setText("");
                 }
                 catch (Exception ex)
                 {
@@ -87,11 +91,13 @@ public class Edit {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-
+                    vocable = vocab_dic.replace(vocable.getWord(),
+                            txtFld1.getText(), vocable.getLanguage());
+                    //vc.editTranslation((Vocable.Language) comboBoxLang1.getSelectedItem(), txtFld1.getText());
                 }
                 catch(NullPointerException ex)
                 {
-                    System.out.println("one of the objects is null");
+                    System.out.println("(btnSaveEdit)one of the objects is null");
                 }
              }
         });
@@ -120,21 +126,20 @@ public class Edit {
         frame.setVisible(true);
     }
 
-     //testing
+    //testing
     public static void main(String args[])
     {
         VocableDictionary d = new VocableDictionary();
         d.addVocable(new Vocable("hallo", Vocable.Language.GER),
-                new Vocable("hello", Vocable.Language.ENG));
+                new Vocable("hello", Vocable.Language.ENG), new Vocable("salut", Vocable.Language.FRA));
         Edit g = new Edit(d, (Vocable) d.getVocableList().toArray()[0], InterfaceLanguages.Languages.EN);
     }
 
-    private void getIntLang()
+    public void setIntLang(InterfaceLanguages.Languages lang)
     {
-
         lblLang1.setText(InterfaceLanguages.getString(lang, "language"));
         lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
         btnSubmit.setText(InterfaceLanguages.getString(lang, "save"));
-        frame.setTitle(InterfaceLanguages.getString(lang, "vocab-trainer"));
+        frame.setTitle(InterfaceLanguages.getString(lang, "edit"));
     }
 }
