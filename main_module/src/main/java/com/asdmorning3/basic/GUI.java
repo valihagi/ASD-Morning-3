@@ -203,6 +203,7 @@ public class GUI {
         itemOverview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                VocableOverview overview = new VocableOverview(vcb, lang);
                 //TODO: add new pane to the tabbed pane
             }
         });
@@ -281,5 +282,6 @@ public class GUI {
         menuFile.setText(languages.getString(lang, "file"));
         itemLoad.setText(languages.getString(lang, "load"));
         menuInterface.setText(languages.getString(lang, "interface"));
+        itemOverview.setText(languages.getString(lang, "overview"));
     }
 }
