@@ -133,6 +133,17 @@ public class VocableDictionary implements Serializable {
 		return  vocables;
 	}
 
+	public ArrayList<Vocable> getVocablesByTag(Tags tag, ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.hasTag(tag))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
 	public void changeVocableRating(Vocable.Rating rating, Vocable vocable)
 	{
 		vocable.changeRating(rating);
@@ -158,11 +169,42 @@ public class VocableDictionary implements Serializable {
 		return  sortedVocables;
 	}
 
+	public ArrayList<Vocable> getVocablesSortedAsc(ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+		for(Vocable.Rating rating : Vocable.Rating.values())
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(rating))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
 	public ArrayList<Vocable> getVocablesSortedDesc(HashSet<Vocable> list)
 	{
 		ArrayList<Vocable> sortedVocables = new ArrayList<>();
 
-		for(int index = Vocable.Rating.values().length; index >= 0; index--)
+		for(int index = Vocable.Rating.values().length - 1; index >= 0; index--)
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(Vocable.Rating.values()[index]))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesSortedDesc(ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(int index = Vocable.Rating.values().length - 1; index >= 0; index--)
 		{
 			for (Vocable vocable : list)
 			{
@@ -175,6 +217,17 @@ public class VocableDictionary implements Serializable {
 	}
 
 	public ArrayList<Vocable> getVocablesByRating(Vocable.Rating rating, HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.getRating().equals(rating))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
+	public ArrayList<Vocable> getVocablesByRating(Vocable.Rating rating, ArrayList<Vocable> list)
 	{
 		ArrayList<Vocable> vocables = new ArrayList<>();
 		for (Vocable vocable : list)
