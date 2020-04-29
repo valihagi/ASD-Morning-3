@@ -113,6 +113,27 @@ public class VocableDictionary implements Serializable {
 		}
 	}
 
+	public Vocable replace(String old_vocab, String new_vocab, Vocable.Language lang)
+	{
+		for(Vocable i : findVocable(old_vocab, lang))
+		{
+			i.editTranslation(lang, new_vocab);
+			assert(i.getTranslation(lang).getWord() == new_vocab);
+			for(Vocable.Language l : Vocable.Language.values())
+			{
+				if(l != lang)
+				{
+					try {
+						i.getTranslation(l).editTranslation(lang, new_vocab);
+					}
+					catch(NullPointerException ex) {}
+				}
+			}
+			return i;
+		}
+		return null;
+	}
+
 	public List<Vocable> getAllFromLanguage(Vocable.Language lang)
 	{
 		List<Vocable> vocables = new ArrayList<>();
