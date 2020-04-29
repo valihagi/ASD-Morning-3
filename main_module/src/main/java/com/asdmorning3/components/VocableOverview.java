@@ -4,9 +4,7 @@ import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
 
-import javax.print.DocFlavor;
 import javax.swing.*;
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +15,6 @@ public class VocableOverview {
 	private JTable table_, table_1;
 	private InterfaceLanguages.Languages interfaceLanguage_;
 	private ArrayList<List<Vocable>> vocable_list_;
-	private VocableTable tableModel_;
 	private static int  WIDTH = 200;
 	private Object[][] data_;
 	private String[] columns_;
