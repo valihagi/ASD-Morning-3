@@ -1,5 +1,6 @@
 package com.asdmorning3.junit;
 
+import com.asdmorning3.basic.Tags;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -212,9 +212,9 @@ public class test001b {
 		}
 
 		dictionary.addVocable(vocable1, vocable2);
-		var tag = dictionary.createTag(description, color);
+		Tags tag = dictionary.createTag(description, color);
 		dictionary.addTagToVocable(tag, dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0));
-		var tag2 = dictionary.createTag("verb", Color.black);
+		Tags tag2 = dictionary.createTag("verb", Color.black);
 		dictionary.addTagToVocable(tag2, dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0));
 
 		try{

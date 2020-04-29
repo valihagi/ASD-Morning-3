@@ -1,22 +1,17 @@
 package com.asdmorning3.basic;
 
 
+import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
-
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.List;
 import java.util.Objects;
-import com.asdmorning3.components.VocableOverview;
-import com.asdmorning3.test.InterfaceLanguages;
 
 public class GUI {
 
@@ -29,6 +24,7 @@ public class GUI {
     JMenu menuFile;
     JMenuItem itemSave;
     JMenuItem itemLoad;
+    InterfaceLanguages languages;
 
     JTextField txtFld1;
     JTextField txtFld2;
@@ -44,6 +40,7 @@ public class GUI {
 
     public GUI(VocableDictionary v)
     {
+        languages = new InterfaceLanguages();
         vcb = v;
         pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -229,16 +226,16 @@ public class GUI {
 
     private void getIntLang()
     {
-        lblIntLang.setText(InterfaceLanguages.getString(lang, "interfacelanguage"));
-        lblLang1.setText(InterfaceLanguages.getString(lang, "language"));
-        lblLang2.setText(InterfaceLanguages.getString(lang, "language"));
-        lblWord1.setText(InterfaceLanguages.getString(lang, "word"));
-        lblWord2.setText(InterfaceLanguages.getString(lang, "word"));
-        btnSubmit.setText(InterfaceLanguages.getString(lang, "add"));
-        btnOverview.setText(InterfaceLanguages.getString(lang, "overview"));
-        itemSave.setText(InterfaceLanguages.getString(lang, "save"));
-        frame.setTitle(InterfaceLanguages.getString(lang, "vocab-trainer"));
-        menuFile.setText(InterfaceLanguages.getString(lang, "file"));
-        itemLoad.setText(InterfaceLanguages.getString(lang, "load"));
+        lblIntLang.setText(languages.getString(lang, "interfacelanguage"));
+        lblLang1.setText(languages.getString(lang, "language"));
+        lblLang2.setText(languages.getString(lang, "language"));
+        lblWord1.setText(languages.getString(lang, "word"));
+        lblWord2.setText(languages.getString(lang, "word"));
+        btnSubmit.setText(languages.getString(lang, "add"));
+        btnOverview.setText(languages.getString(lang, "overview"));
+        itemSave.setText(languages.getString(lang, "save"));
+        frame.setTitle(languages.getString(lang, "vocab-trainer"));
+        menuFile.setText(languages.getString(lang, "file"));
+        itemLoad.setText(languages.getString(lang, "load"));
     }
 }

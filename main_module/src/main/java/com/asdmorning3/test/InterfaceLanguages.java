@@ -1,8 +1,7 @@
 package com.asdmorning3.test;
 
-import com.asdmorning3.basic.Vocable;
-
 import java.io.*;
+import java.net.URL;
 
 public class InterfaceLanguages {
 
@@ -13,23 +12,23 @@ public class InterfaceLanguages {
     }
 
     //example getString(InterfaceLanguages.Languages.DE, "add");
-    public static String getString(Languages lang, String word) {
-        String fileName = "";
+    public String getString(Languages lang, String word) {
+        URL fileName = null;
         switch (lang) {
             case DE:
-                fileName = System.getProperty("user.dir") + "/main_module/src/main/java/com/asdmorning3/test/de.conf";
+                fileName = InterfaceLanguages.class.getResource("../../../de.conf");
                 break;
             case EN:
-                fileName = System.getProperty("user.dir") + "/main_module/src/main/java/com/asdmorning3/test/en.conf";
+                fileName = InterfaceLanguages.class.getResource("../../../en.conf");
                 break;
             case FR:
-                fileName = System.getProperty("user.dir") + "/main_module/src/main/java/com/asdmorning3/test/fr.conf";
+                fileName = InterfaceLanguages.class.getResource("../../../fr.conf");
                 break;
             default:
                 System.out.println("error: language not found");
         }
 
-        File file = new File(fileName);
+        File file = new File(fileName.getPath());
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
