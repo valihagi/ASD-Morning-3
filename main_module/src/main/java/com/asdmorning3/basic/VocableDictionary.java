@@ -1,17 +1,10 @@
 package com.asdmorning3.basic;
 
-import com.asdmorning3.test.InterfaceLanguages;
-
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import com.asdmorning3.basic.Vocable;
 
 public class VocableDictionary implements Serializable {
 
@@ -226,4 +219,3 @@ public class VocableDictionary implements Serializable {
 	}
 
 	}
-}
