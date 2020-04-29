@@ -240,3 +240,4 @@ public class VocableDictionary implements Serializable {
 	}
 
 }
+
