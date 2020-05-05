@@ -11,7 +11,7 @@ import java.util.List;
 public class VocableOverview {
 
 	private JFrame frame_;
-	private JPanel panel_;
+	public JPanel panel_;
 	private JTable table_, table_1;
 	private InterfaceLanguages.Languages interfaceLanguage_;
 	private ArrayList<List<Vocable>> vocable_list_;
@@ -33,7 +33,7 @@ public class VocableOverview {
 		// TODO implement changing header of JFrame according to InterfaceLanguage
 		languages = new InterfaceLanguages();
 		interfaceLanguage_ = interfaceLanguage;
-		frame_ = new JFrame("Vocab Overview"/*InterfaceLanguages.getString(interfaceLanguage_, "overview"))*/);
+		frame_ = new JFrame(languages.getString(interfaceLanguage, "overview"));
 		columns_ = new String[Vocable.Language.class.getEnumConstants().length];
 		int i = 0;
 		for (Vocable.Language language: Vocable.Language.class.getEnumConstants())
@@ -50,5 +50,4 @@ public class VocableOverview {
 		frame_.add(jps);
 		frame_.setVisible(true);
 	}
-
 }

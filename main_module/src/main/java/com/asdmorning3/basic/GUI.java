@@ -3,6 +3,7 @@ package com.asdmorning3.basic;
 
 import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
+import com.asdmorning3.test.studyInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -203,6 +204,7 @@ public class GUI {
         itemOverview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                VocableOverview overview = new VocableOverview(vcb, lang);
                 //TODO: add new pane to the tabbed pane
             }
         });
@@ -211,6 +213,7 @@ public class GUI {
         itemStudy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                studyInterface std = new studyInterface(vcb, lang);
                 //TODO: add new pane to the tabbed pane
             }
         });
@@ -281,5 +284,7 @@ public class GUI {
         menuFile.setText(languages.getString(lang, "file"));
         itemLoad.setText(languages.getString(lang, "load"));
         menuInterface.setText(languages.getString(lang, "interface"));
+        itemOverview.setText(languages.getString(lang, "overview"));
+        itemStudy.setText(languages.getString(lang, "study"));
     }
 }
