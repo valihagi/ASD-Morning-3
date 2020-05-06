@@ -1,17 +1,17 @@
 package com.asdmorning3.test;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
 import com.asdmorning3.basic.Vocable;
-import com.asdmorning3.basic.Vocable.Language;
 import com.asdmorning3.basic.VocableDictionary;
-import com.asdmorning3.test.InterfaceLanguages;
-import junit.runner.Version;
-import java.lang.*;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 
 public class studyInterface {
@@ -132,7 +132,6 @@ public class studyInterface {
 
         });
         setIntLang(lang);
-        frame.setVisible(true);
 
     }
 
@@ -141,5 +140,15 @@ public class studyInterface {
         lblLang2.setText(languages.getString(lang, "to"));
         button.setText(languages.getString(lang, "show"));
         frame.setTitle(languages.getString(lang, "study"));
+    }
+
+    public void setVisible(boolean visible)
+    {
+        frame.setVisible(visible);
+    }
+
+    public Component getContent()
+    {
+        return frame.getContentPane();
     }
 }
