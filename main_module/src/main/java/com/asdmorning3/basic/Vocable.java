@@ -12,7 +12,7 @@ public class Vocable implements Serializable {
 	public Vocable(@NotNull String word, @NotNull Language language) {
 		if (word.length() == 0)
 		{
-			throw new IllegalArgumentException("Word has to be at least of lentght one."); //TODO constant for interface language
+			throw new IllegalArgumentException("Word has to be at least of length one."); //TODO constant for interface language
 		}
 		this.word_ = word;
 		this.language_ = language;
@@ -73,7 +73,8 @@ public class Vocable implements Serializable {
 			if(l != language)
 			{
 				try {
-					new_vcb.addTranslation(tmp_vcb.getTranslation(l));
+					if(tmp_vcb.getTranslation(l) != null)
+						new_vcb.addTranslation(tmp_vcb.getTranslation(l));
 				}
 				catch(NullPointerException ex) {}
 			}
@@ -127,6 +128,8 @@ public class Vocable implements Serializable {
 				return "Deutsch";
 			case ENG:
 				return "English";
+			case FRA:
+				return "Francais";
 			default:
 				return "Language not Implemented";
 		}
