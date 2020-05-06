@@ -24,7 +24,8 @@ public class Vocable implements Serializable {
 
 	public enum Language {
 		ENG,
-		GER
+		GER,
+		FRA
 	}
 
 	public enum Rating
@@ -74,6 +75,22 @@ public class Vocable implements Serializable {
 	{
 		translation_.remove(language);
 		translation_.put(language, vocable);
+	}
+	public void editTranslation(Language language, String vocable)
+	{
+		Vocable tmp_vcb = translation_.get(language), new_vcb;
+		translation_.remove(language);
+		translation_.put(language, (new_vcb = new Vocable(vocable, language)));
+		for(Vocable.Language l : Vocable.Language.values())
+		{
+			if(l != language)
+			{
+				try {
+					new_vcb.addTranslation(tmp_vcb.getTranslation(l));
+				}
+				catch(NullPointerException ex) {}
+			}
+		}
 	}
 
 	public void removeTranslation(Language language)
