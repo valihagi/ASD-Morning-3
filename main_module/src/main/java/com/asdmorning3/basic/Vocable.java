@@ -1,6 +1,6 @@
 package com.asdmorning3.basic;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Vocable implements Serializable {
 
-	public Vocable(@NotNull String word, @NotNull Language language) {
+	public Vocable(/*@NotNull*/ String word, /*@NotNull*/ Language language) {
 		if (word.length() == 0)
 		{
 			throw new IllegalArgumentException("Word has to be at least of lentght one."); //TODO constant for interface language
@@ -46,7 +46,7 @@ public class Vocable implements Serializable {
 
 	private ArrayList<Tags> tags_;
 
-	public Vocable getTranslation(@NotNull Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
+	public Vocable getTranslation(/*@NotNull*/ Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
 	{
 		if (language == language_)
 		{
@@ -55,7 +55,7 @@ public class Vocable implements Serializable {
 		return translation_.get(language);
 	}
 
-	public void addTranslation(@NotNull Vocable vocable) throws IllegalArgumentException
+	public void addTranslation(/*@NotNull*/ Vocable vocable) throws IllegalArgumentException
 	{
 		if (vocable.getLanguage() == language_)
 		{

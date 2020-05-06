@@ -17,7 +17,7 @@ public class VocableOverview {
 	private JTable table_, table_1;
 	private InterfaceLanguages.Languages interfaceLanguage_;
 	private ArrayList<List<Vocable>> vocable_list_;
-	private VocableTable tableModel_;
+	//private VocableTable tableModel_;
 	private static int  WIDTH = 200;
 	private Object[][] data_;
 	private String[] columns_;
