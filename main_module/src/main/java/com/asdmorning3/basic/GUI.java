@@ -3,6 +3,7 @@ package com.asdmorning3.basic;
 
 import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
+import com.asdmorning3.test.TestVocabulary;
 import com.asdmorning3.test.studyInterface;
 
 import javax.swing.*;
@@ -33,6 +34,7 @@ public class GUI {
     JMenu menuInterface;
     JMenuItem itemStudy;
     JMenuItem itemOverview;
+    JMenuItem itemTest;
 
     JMenu menuLang;
     HashMap<JMenuItem, InterfaceLanguages.Languages> itemLangs;
@@ -61,6 +63,7 @@ public class GUI {
         menuInterface = new JMenu();
         itemStudy = new JMenuItem();
         itemOverview = new JMenuItem();
+        itemTest = new JMenuItem();
 
         menuLang = new JMenu();
         itemLangs = new HashMap<>();
@@ -219,6 +222,15 @@ public class GUI {
         });
         menuInterface.add(itemStudy);
 
+        itemTest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                TestVocabulary test = new TestVocabulary(vcb, lang);
+                //TODO: add new pane to the tabbed pane
+            }
+        });
+        menuInterface.add(itemTest);
+
         for(InterfaceLanguages.Languages i : InterfaceLanguages.Languages.class.getEnumConstants())
         {
             JMenuItem temp = new JMenuItem(i.toString());
@@ -286,5 +298,6 @@ public class GUI {
         menuInterface.setText(languages.getString(lang, "interface"));
         itemOverview.setText(languages.getString(lang, "overview"));
         itemStudy.setText(languages.getString(lang, "study"));
+        itemTest.setText(languages.getString(lang, "test"));
     }
 }
