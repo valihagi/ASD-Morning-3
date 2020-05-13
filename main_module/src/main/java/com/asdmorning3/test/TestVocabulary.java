@@ -2,6 +2,7 @@ package com.asdmorning3.test;
 
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
+import com.asdmorning3.basic.Tags;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -18,14 +19,26 @@ public class TestVocabulary {
     private static JDialog d;
     static JList list_vocabs;
     static JList list_test;
-    public JLabel lblLang1 = new JLabel();
-    public JLabel lblLang2 = new JLabel();
+    public JLabel lblVocableList = new JLabel();
+    public JLabel lblTestList = new JLabel();
+    public JLabel lblRepetition = new JLabel();
+    public JLabel lblLanguages = new JLabel();
     public JButton button_start = new JButton();
+    public JButton button_show = new JButton();
+    public JButton button_add_all = new JButton();
+    public JButton button_remove_all = new JButton();
+    public JComboBox<Vocable.Language> comboBoxFromLang;
+    public JComboBox<Vocable.Language> comboBoxToLang;
+    public JComboBox<Tags> comboBoxTags;
+    public JComboBox<String> comboBoxRating;
+    public JTextField txtNumber = new JTextField();
     VocableDictionary dictionary;
     InterfaceLanguages.Languages interface_languages;
     InterfaceLanguages languages;
     //JTextField t1;
     HashMap<String, Vocable.Language> language_list = new HashMap();
+    ArrayList<Vocable> vocab_array = new ArrayList<>();
+    ArrayList<Vocable> test_array = new ArrayList<>();
 
     private java.util.List<Vocable> vocableList;
 
@@ -36,7 +49,7 @@ public class TestVocabulary {
         frame = new JFrame("Test Interface");
         JPanel pane = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        frame.setSize(600, 600);
+
 
         ArrayList<String> languages = new ArrayList<String>();
         for (Vocable.Language language : Vocable.Language.class.getEnumConstants()) {
@@ -44,67 +57,99 @@ public class TestVocabulary {
             language_list.put(language.name(), language);
         }
 
-        final JComboBox fromLanguage = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
-        final JComboBox toLanguage = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
+        comboBoxFromLang = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
+        comboBoxToLang = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
+        comboBoxTags = new JComboBox(dictionary.getTagsString().toArray(new String[0]));
+        comboBoxRating = new JComboBox();
         final JComboBox setAnotherLanguage;
 
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.weightx = .05;
+        frame.setSize(600, 600);
+        c.insets = new Insets(10, 0, 10, 0);
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(10, 55, 0, 100);
-        pane.add(lblLang1, c);
+        pane.add(comboBoxTags, c);
 
         c.gridx = 1;
         c.gridy = 0;
-        c.weightx = .05;
-        c.insets = new Insets(10, 0, 0, 55);
-        pane.add(lblLang2, c);
+        pane.add(comboBoxRating, c);
+
+        //c.anchor = GridBagConstraints.FIRST_LINE_START;
+
+        c.gridx = 2;
+        c.gridy = 0;
+        pane.add(button_show, c);
 
         c.gridx = 0;
         c.gridy = 1;
-        c.insets = new Insets(10, 55, 10, 100);
-        pane.add(fromLanguage, c);
+        pane.add(lblLanguages, c);
 
         c.gridx = 1;
         c.gridy = 1;
-        c.insets = new Insets(10, 0, 10, 55);
-        pane.add(toLanguage, c);
+        pane.add(comboBoxFromLang, c);
+
+        c.gridx = 2;
+        c.gridy = 1;
+        pane.add(comboBoxToLang, c);
 
         c.gridx = 0;
         c.gridy = 2;
-        list_test = new JList();
-        c.insets = new Insets(10, 55, 10, 100);
-        JScrollPane scrollPaneL = new JScrollPane(list_vocabs);
-        pane.add(scrollPaneL, c);
+        pane.add(lblVocableList, c);
 
-        c.gridx = 1;
+        c.gridx = 2;
         c.gridy = 2;
-        list_vocabs = new JList();
-        c.insets = new Insets(10, 0, 10, 55);
-        JScrollPane scrollPaneR = new JScrollPane(list_test);
-        pane.add(scrollPaneR, c);
+        pane.add(lblTestList, c);
 
         c.gridx = 0;
         c.gridy = 3;
-        c.insets = new Insets(10, 55, 10, 100);
+        c.gridheight = 5;
+        list_vocabs = new JList();
+        JScrollPane scroll_vocabs = new JScrollPane(list_vocabs);
+        pane.add(scroll_vocabs, c);
+
+        c.gridx = 2;
+        c.gridy = 3;
+        c.gridheight = 5;
+        list_test = new JList();
+        JScrollPane scroll_test = new JScrollPane(list_test);
+        pane.add(scroll_test, c);
+
+        c.gridheight = 1;
+        c.gridx = 0;
+        c.gridy = 9;
+        pane.add(button_add_all, c);
+
+        c.gridx = 2;
+        c.gridy = 9;
+        pane.add(button_remove_all, c);
+
+        c.gridx = 0;
+        c.gridy = 10;
+        pane.add(lblRepetition, c);
+
+        c.gridx = 0;
+        c.gridy = 11;
+        pane.add(txtNumber, c);
+
+        c.gridx = 2;
+        c.gridy = 11;
         pane.add(button_start, c);
 
+
         frame.add(pane);
-        button_start.addActionListener(new ActionListener() {
+        button_show.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Object obj = toLanguage.getSelectedItem();
+                Object obj = comboBoxFromLang.getSelectedItem();
                 String currentLanguage = String.valueOf(obj);
 
-                Object obj2 = fromLanguage.getSelectedItem();
+                Object obj2 = comboBoxToLang.getSelectedItem();
                 String secondCurrentLanguage = String.valueOf(obj2);
 
                 if (currentLanguage != secondCurrentLanguage) {
-                    vocableList = dictionary.getAllFromLanguage(language_list.get(currentLanguage));
-                    int size = vocableList.size();
+                    vocab_array = new ArrayList<Vocable>(dictionary.getAllFromLanguage(language_list.get(currentLanguage)));
+                    int size = vocab_array.size();
                     String[] words = new String[size];
-                    for (int counter = 0; counter < vocableList.size(); counter++) {
-                        words[counter] = vocableList.get(counter).getWord();
+                    for (int counter = 0; counter < vocab_array.size(); counter++) {
+                        words[counter] = vocab_array.get(counter).getWord();
                     }
                     final String[] final_list = words;
                     list_vocabs.setListData(final_list);
@@ -113,7 +158,6 @@ public class TestVocabulary {
                             "Select two different languages!",
                             "WARNING",
                             JOptionPane.WARNING_MESSAGE);
-
             }
 
         });
@@ -122,7 +166,7 @@ public class TestVocabulary {
         list_vocabs.addListSelectionListener(new ListSelectionListener() {
 
             public void valueChanged(ListSelectionEvent event) {
-                Object obj = fromLanguage.getSelectedItem();
+                Object obj = comboBoxFromLang.getSelectedItem();
                 String currentLanguage = String.valueOf(obj);
                 if (!event.getValueIsAdjusting()) {
                     JList source = (JList) event.getSource();
@@ -130,7 +174,7 @@ public class TestVocabulary {
                     HashSet<Vocable> test = dictionary.getVocableList();
                     for (Vocable i : test)
                         if (i.getWord().equals(selected)) {
-                            //t1.setText(i.getTranslation(language_list.get(currentLanguage)).getWord());
+                            test_array.add(i);
                         }
                 }
             }
@@ -140,7 +184,7 @@ public class TestVocabulary {
         list_test.addListSelectionListener(new ListSelectionListener() {
 
             public void valueChanged(ListSelectionEvent event) {
-                Object obj = fromLanguage.getSelectedItem();
+                Object obj = comboBoxToLang.getSelectedItem();
                 String currentLanguage = String.valueOf(obj);
                 if (!event.getValueIsAdjusting()) {
                     JList source = (JList) event.getSource();
@@ -148,21 +192,35 @@ public class TestVocabulary {
                     HashSet<Vocable> test = dictionary.getVocableList();
                     for (Vocable i : test)
                         if (i.getWord().equals(selected)) {
-                            //t1.setText(i.getTranslation(language_list.get(currentLanguage)).getWord());
                         }
                 }
             }
 
         });
         setIntLang(lang);
-        frame.setVisible(true);
 
     }
 
     public void setIntLang(InterfaceLanguages.Languages lang) {
-        lblLang1.setText(languages.getString(lang, "from"));
-        lblLang2.setText(languages.getString(lang, "to"));
-        frame.setTitle(languages.getString(lang, "study"));
+        lblVocableList.setText(languages.getString(lang, "vocablist"));
+        lblTestList.setText(languages.getString(lang, "testlist"));
+        lblRepetition.setText(languages.getString(lang, "repetition"));
+        lblLanguages.setText(languages.getString(lang, "languages"));
+        frame.setTitle(languages.getString(lang, "test"));
         button_start.setText(languages.getString(lang, "start"));
+        button_show.setText(languages.getString(lang, "show"));
+        button_add_all.setText(languages.getString(lang, "addall"));
+        button_remove_all.setText(languages.getString(lang, "removeall"));
+    }
+
+    public void setVisible(boolean visible)
+    {
+        frame.setVisible(visible);
+    }
+
+    public Component getContent()
+    {
+        return frame.getContentPane();
     }
 }
+

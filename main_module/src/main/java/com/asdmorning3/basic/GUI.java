@@ -3,8 +3,8 @@ package com.asdmorning3.basic;
 
 import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
-import com.asdmorning3.test.TestVocabulary;
 import com.asdmorning3.test.studyInterface;
+import com.asdmorning3.test.TestVocabulary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,14 +30,6 @@ public class GUI {
     JMenuItem itemLoad;
     InterfaceLanguages languages;
 
-<<<<<<< HEAD
-    JMenu menuInterface;
-    JMenuItem itemStudy;
-    JMenuItem itemOverview;
-    JMenuItem itemTest;
-
-=======
->>>>>>> 4ec2b002f44946cecdfa1d8534101a0ad2a23ec5
     JMenu menuLang;
     HashMap<JMenuItem, InterfaceLanguages.Languages> itemLangs;
 
@@ -54,6 +46,7 @@ public class GUI {
 
     VocableOverview overview;
     studyInterface study;
+    TestVocabulary test;
 
     public GUI(VocableDictionary v)
     {
@@ -65,13 +58,6 @@ public class GUI {
         //btnOverview = new JButton();
         btnSubmit = new JButton();
 
-<<<<<<< HEAD
-        menuInterface = new JMenu();
-        itemStudy = new JMenuItem();
-        itemOverview = new JMenuItem();
-        itemTest = new JMenuItem();
-=======
->>>>>>> 4ec2b002f44946cecdfa1d8534101a0ad2a23ec5
 
         menuLang = new JMenu();
         itemLangs = new HashMap<>();
@@ -87,6 +73,7 @@ public class GUI {
         lang = (InterfaceLanguages.Languages) InterfaceLanguages.Languages.DE;
         overview = new VocableOverview(vcb, lang);
         study = new studyInterface(vcb, lang);
+        test = new TestVocabulary(vcb, lang);
         frame = new JFrame();
         lblLang2 = new JLabel();
         lblWord1 = new JLabel();
@@ -218,15 +205,6 @@ public class GUI {
         menuFile.add(itemLoad);
 
 
-        itemTest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                TestVocabulary test = new TestVocabulary(vcb, lang);
-                //TODO: add new pane to the tabbed pane
-            }
-        });
-        menuInterface.add(itemTest);
-
         for(InterfaceLanguages.Languages i : InterfaceLanguages.Languages.class.getEnumConstants())
         {
             JMenuItem temp = new JMenuItem(i.toString());
@@ -248,6 +226,7 @@ public class GUI {
         tabbedPane.addTab(languages.getString(lang, "add"), pane);
         tabbedPane.addTab(languages.getString(lang, "overview"), overview.getContent());
         tabbedPane.addTab(languages.getString(lang, "study-interface"), study.getContent());
+        tabbedPane.addTab(languages.getString(lang, "test"), test.getContent());
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -271,7 +250,7 @@ public class GUI {
         frame.setVisible(true);
     }
 
-     //testing
+    //testing
     public static void main(String args[])
     {
         VocableDictionary d = new VocableDictionary();
@@ -292,15 +271,10 @@ public class GUI {
         frame.setTitle(languages.getString(lang, "vocab-trainer"));
         menuFile.setText(languages.getString(lang, "file"));
         itemLoad.setText(languages.getString(lang, "load"));
-<<<<<<< HEAD
-        menuInterface.setText(languages.getString(lang, "interface"));
-        itemOverview.setText(languages.getString(lang, "overview"));
-        itemStudy.setText(languages.getString(lang, "study"));
-        itemTest.setText(languages.getString(lang, "test"));
-=======
         tabbedPane.setTitleAt(0, languages.getString(lang, "add"));
         tabbedPane.setTitleAt(1, languages.getString(lang, "overview"));
         tabbedPane.setTitleAt(2, languages.getString(lang, "study"));
+        tabbedPane.setTitleAt(3, languages.getString(lang, "test"));
     }
 
     private void refreshTabs()
@@ -310,8 +284,5 @@ public class GUI {
         study = new studyInterface(vcb, lang);
         tabbedPane.setComponentAt(1, overview.getContent());
         tabbedPane.setComponentAt(2, study.getContent());
->>>>>>> 4ec2b002f44946cecdfa1d8534101a0ad2a23ec5
     }
 }
-
-
