@@ -3,6 +3,8 @@ package com.asdmorning3.junit;
 import com.asdmorning3.basic.Tags;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
+import com.asdmorning3.test.InterfaceLanguages;
+import com.asdmorning3.test.studyInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -266,24 +268,21 @@ public class test001b {
 
 
 	@Test
-	@DisplayName("JList Test")
-	void jlistTest()
+	@DisplayName("Sort JList Test")
+	void sortJlistTest()
 	{
+		dictionary = new VocableDictionary();
+		dictionary.addVocable(new Vocable("b", Vocable.Language.ENG), new Vocable("B", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("c", Vocable.Language.ENG), new Vocable("C", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("a", Vocable.Language.ENG), new Vocable("A", Vocable.Language.GER));
+		studyInterface interfac = new studyInterface(dictionary, InterfaceLanguages.Languages.DE);
+
 		JList list = new JList();
 		String[] strings = {"a", "b", "d", "c"};
 		list.setListData(strings);
 
 
-		ArrayList<String> sortedVocables = new ArrayList<>();
-
-		for(int i = 0 ; i < list.getModel().getSize();i++)
-		{
-			sortedVocables.add((String) (list.getModel().getElementAt(i)));
-		}
-
-		Collections.sort(sortedVocables);
-
-		list = new JList(sortedVocables.toArray());
+		list = interfac.sortJlist(list);
 
 
 		assert(list.getModel().getElementAt(0).toString().charAt(0) <
