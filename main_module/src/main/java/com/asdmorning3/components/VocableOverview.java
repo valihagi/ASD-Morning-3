@@ -30,7 +30,6 @@ public class VocableOverview {
 
 	public VocableOverview(VocableDictionary dict, InterfaceLanguages.Languages interfaceLanguage)
 	{
-		// TODO implement changing header of JFrame according to InterfaceLanguage
 		languages = new InterfaceLanguages();
 		interfaceLanguage_ = interfaceLanguage;
 		frame_ = new JFrame(languages.getString(interfaceLanguage, "overview"));
@@ -41,7 +40,9 @@ public class VocableOverview {
 			columns_[i] = Vocable.getLanguageWord(language);
 			i++;
 		}
+
 		String data_[][] = dict.getTable();
+
 		table_ = new JTable(data_, columns_);
 
 
