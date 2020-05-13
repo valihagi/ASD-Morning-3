@@ -3,15 +3,20 @@ package com.asdmorning3.junit;
 import com.asdmorning3.basic.Tags;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
+import com.asdmorning3.test.InterfaceLanguages;
+import com.asdmorning3.test.studyInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -242,6 +247,46 @@ public class test001b {
 
 		dictionary.removeTagToVocable(dictionary.getTagByDescription(description), vocable);
 		assert(vocable.getTags().size() == 1);
+	}
+
+
+	@Test
+	@DisplayName("Sort Test")
+	void sortTest()
+	{
+		dictionary = new VocableDictionary();
+		dictionary.addVocable(new Vocable("b", Vocable.Language.ENG), new Vocable("B", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("c", Vocable.Language.ENG), new Vocable("C", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("a", Vocable.Language.ENG), new Vocable("A", Vocable.Language.GER));
+
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+		sortedVocables = dictionary.sortVocablesByAlhpabet(dictionary.getVocableList());
+
+		assert(sortedVocables.get(0).getWord(Vocable.Language.ENG).charAt(0) <
+				sortedVocables.get(2).getWord(Vocable.Language.ENG).charAt(0));
+	}
+
+
+	@Test
+	@DisplayName("Sort JList Test")
+	void sortJlistTest()
+	{
+		dictionary = new VocableDictionary();
+		dictionary.addVocable(new Vocable("b", Vocable.Language.ENG), new Vocable("B", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("c", Vocable.Language.ENG), new Vocable("C", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("a", Vocable.Language.ENG), new Vocable("A", Vocable.Language.GER));
+		studyInterface interfac = new studyInterface(dictionary, InterfaceLanguages.Languages.DE);
+
+		JList list = new JList();
+		String[] strings = {"a", "b", "d", "c"};
+		list.setListData(strings);
+
+
+		list.setModel(interfac.sortJlistAlphabeticallyAsc(list));
+
+
+		assert(list.getModel().getElementAt(0).toString().charAt(0) <
+				list.getModel().getElementAt(1).toString().charAt(0));
 	}
 }
 

@@ -40,7 +40,9 @@ public class VocableOverview {
 			columns_[i] = Vocable.getLanguageWord(language);
 			i++;
 		}
+
 		String data_[][] = dict.getTable();
+
 		table_ = new JTable(data_, columns_);
 
 
