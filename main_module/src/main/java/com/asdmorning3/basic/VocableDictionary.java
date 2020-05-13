@@ -257,6 +257,15 @@ public class VocableDictionary implements Serializable {
 		return tagsList;
 	}
 
+	public ArrayList<String> getTagsString() {
+		ArrayList<String> tagsString = new ArrayList<String>();
+		for(Tags tag : tagsList)
+		{
+			tagsString.add(tag.getDescription());
+		}
+		return tagsString;
+	}
+
 	public void addTagToVocable(Tags tag, Vocable vocable)
 	{
 		vocable.addTag(tag);

@@ -4,6 +4,7 @@ package com.asdmorning3.basic;
 import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
 import com.asdmorning3.test.studyInterface;
+import com.asdmorning3.test.TestVocabulary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,6 +46,7 @@ public class GUI {
 
     VocableOverview overview;
     studyInterface study;
+    TestVocabulary test;
 
     public GUI(VocableDictionary v)
     {
@@ -71,6 +73,7 @@ public class GUI {
         lang = (InterfaceLanguages.Languages) InterfaceLanguages.Languages.DE;
         overview = new VocableOverview(vcb, lang);
         study = new studyInterface(vcb, lang);
+        test = new TestVocabulary(vcb, lang);
         frame = new JFrame();
         lblLang2 = new JLabel();
         lblWord1 = new JLabel();
@@ -223,6 +226,7 @@ public class GUI {
         tabbedPane.addTab(languages.getString(lang, "add"), pane);
         tabbedPane.addTab(languages.getString(lang, "overview"), overview.getContent());
         tabbedPane.addTab(languages.getString(lang, "study-interface"), study.getContent());
+        tabbedPane.addTab(languages.getString(lang, "test"), test.getContent());
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -246,7 +250,7 @@ public class GUI {
         frame.setVisible(true);
     }
 
-     //testing
+    //testing
     public static void main(String args[])
     {
         VocableDictionary d = new VocableDictionary();
@@ -270,6 +274,7 @@ public class GUI {
         tabbedPane.setTitleAt(0, languages.getString(lang, "add"));
         tabbedPane.setTitleAt(1, languages.getString(lang, "overview"));
         tabbedPane.setTitleAt(2, languages.getString(lang, "study"));
+        tabbedPane.setTitleAt(3, languages.getString(lang, "test"));
     }
 
     private void refreshTabs()
@@ -281,5 +286,3 @@ public class GUI {
         tabbedPane.setComponentAt(2, study.getContent());
     }
 }
-
-
