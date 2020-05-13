@@ -174,12 +174,19 @@ public class TestVocabulary {
                     HashSet<Vocable> test = dictionary.getVocableList();
                     for (Vocable i : test)
                         if (i.getWord().equals(selected)) {
+                            if(test_array.contains(i))
+                            {
+                                return;
+                            }
                             test_array.add(i);
                         }
+                    printTestVocabs();
                 }
             }
 
         });
+
+
 
         list_test.addListSelectionListener(new ListSelectionListener() {
 
@@ -211,6 +218,21 @@ public class TestVocabulary {
         button_show.setText(languages.getString(lang, "show"));
         button_add_all.setText(languages.getString(lang, "addall"));
         button_remove_all.setText(languages.getString(lang, "removeall"));
+    }
+
+    public void printTestVocabs()
+    {
+        Object obj = comboBoxFromLang.getSelectedItem();
+        String currentLanguage = String.valueOf(obj);
+
+        int size = test_array.size();
+        String[] words = new String[size];
+        for (int counter = 0; counter < test_array.size(); counter++) {
+            words[counter] = test_array.get(counter).getWord();
+        }
+        final String[] final_list = words;
+        list_test.setListData(final_list);
+
     }
 
     public void setVisible(boolean visible)
