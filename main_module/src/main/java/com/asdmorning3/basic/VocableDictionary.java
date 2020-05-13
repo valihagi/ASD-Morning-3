@@ -193,7 +193,8 @@ public class VocableDictionary implements Serializable {
 		ArrayList<Vocable> list = new ArrayList<Vocable>(Arrays.asList(vocables));
 		if (!german)
 		{
-			Vocable voc1 = new Vocable("", Vocable.Language.GER);
+			Vocable voc1 = new Vocable(" ", Vocable.Language.GER);
+			vocableList.add(voc1);
 			for (Vocable vcb : list)
 			{
 				vcb.addTranslation(voc1);
