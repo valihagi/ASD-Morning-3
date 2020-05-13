@@ -11,8 +11,8 @@ import java.util.List;
 public class VocableOverview {
 
 	private JFrame frame_;
-	public JPanel panel_;
-	private JTable table_, table_1;
+	private JScrollPane pane_;
+	private JTable table_;
 	private InterfaceLanguages.Languages interfaceLanguage_;
 	private ArrayList<List<Vocable>> vocable_list_;
 	private static int  WIDTH = 200;
@@ -47,9 +47,18 @@ public class VocableOverview {
 		table_ = new JTable(data_, columns_);
 
 
-		JScrollPane jps = new JScrollPane(table_);
-		frame_.setSize(Vocable.Language.class.getEnumConstants().length * 200, 400);
-		frame_.add(jps);
-		frame_.setVisible(true);
+		pane_ = new JScrollPane(table_);
+		frame_.setSize(Vocable.Language.class.getEnumConstants().length * WIDTH, 400);
+		frame_.add(pane_);
+	}
+
+	public void changeVisibility(boolean visibility)
+	{
+		frame_.setVisible(visibility);
+	}
+
+	public JScrollPane getContent()
+	{
+		return pane_;
 	}
 }
