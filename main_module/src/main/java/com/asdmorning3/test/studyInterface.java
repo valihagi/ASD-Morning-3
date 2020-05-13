@@ -12,10 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -117,8 +115,8 @@ public class studyInterface {
                 c1.insets = new Insets(10, 10, 10, 10);
                 btnsortalphaasc.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        list.setModel(sortJlist(list));
-
+                        list.setModel(sortJlistAlphabeticallyAsc(list));
+                        frame2.setVisible(false);
                     }
 
                 });
@@ -126,6 +124,14 @@ public class studyInterface {
                 btnsortalphadesc = new JButton("sort alphabetically descending");
                 c1.gridx = 2;
                 c1.gridy = 1;
+                btnsortalphadesc.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        list.setModel(sortJlistAlphabeticallyDesc(list));
+
+                        frame2.setVisible(false);
+                    }
+
+                });
                 pane1.add(btnsortalphadesc, c1);
                 btnsortratingasc = new JButton("sort by rating ascending");
                 c1.gridx = 0;
@@ -241,7 +247,7 @@ public class studyInterface {
         return frame.getContentPane();
     }
 
-    public DefaultListModel sortJlist(JList list)
+    public DefaultListModel sortJlistAlphabeticallyAsc(JList list)
     {
         DefaultListModel<String> model
                 = new DefaultListModel<>();
@@ -252,6 +258,47 @@ public class studyInterface {
         }
 
         Collections.sort(sortedVocables);
+
+        for(String val : sortedVocables)
+            model.addElement(val);
+
+        return model;
+    }
+
+    public DefaultListModel sortJlistAlphabeticallyDesc(JList list)
+    {
+        DefaultListModel<String> model
+                = new DefaultListModel<>();
+        ArrayList<String> sortedVocables = new ArrayList<>();
+        for(int i = 0 ; i < list.getModel().getSize(); i++)
+        {
+            sortedVocables.add((String) (list.getModel().getElementAt(i)));
+        }
+
+        Collections.sort(sortedVocables);
+        Collections.reverse(sortedVocables);
+
+        for(String val : sortedVocables)
+            model.addElement(val);
+
+        return model;
+    }
+
+    public DefaultListModel sortJlistByRatingAsc(JList list)
+    {
+        DefaultListModel<String> model
+                = new DefaultListModel<>();
+        ArrayList<String> sortedVocables = new ArrayList<>();
+        for(int i = 0 ; i < list.getModel().getSize(); i++)
+        {
+            sortedVocables.add((String) (list.getModel().getElementAt(i)));
+        }
+
+        for (Vocable.Rating rating : Vocable.Rating.values())
+        {
+            ArrayList<Vocable> list123 = dictionary.getVocablesByRating(rating, dictionary.getVocableList());
+            sortedVocables.addAll(list123);
+        }
 
         for(String val : sortedVocables)
             model.addElement(val);
