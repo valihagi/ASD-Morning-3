@@ -282,7 +282,7 @@ public class test001b {
 		list.setListData(strings);
 
 
-		list = interfac.sortJlist(list);
+		list.setModel(interfac.sortJlistAlphabeticallyAsc(list));
 
 
 		assert(list.getModel().getElementAt(0).toString().charAt(0) <

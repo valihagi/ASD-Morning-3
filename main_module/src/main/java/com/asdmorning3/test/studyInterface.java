@@ -284,7 +284,7 @@ public class studyInterface {
         return model;
     }
 
-    public DefaultListModel sortJlistByRatingAsc(JList list)
+    /*public DefaultListModel sortJlistByRatingAsc(JList list)
     {
         DefaultListModel<String> model
                 = new DefaultListModel<>();
@@ -304,5 +304,5 @@ public class studyInterface {
             model.addElement(val);
 
         return model;
-    }
+    }*/
 }
