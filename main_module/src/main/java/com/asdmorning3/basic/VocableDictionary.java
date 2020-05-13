@@ -80,7 +80,7 @@ public class VocableDictionary implements Serializable {
 				table[row][col] = vocab.getWord(language);
 				col++;
 			}
-			table[row][col] = "normal";
+			table[row][col] = vocab.getDifficulty();
 			row++;
 		}
 		return table;

@@ -13,13 +13,19 @@ public class Vocable implements Serializable {
 		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
 		this.tags_ = new ArrayList<Tags>();
-		this.rating_ = 2;
+		this.rating_ = Difficulty.MEDIUM;
 	}
 
 	public enum Language {
 		ENG,
 		GER,
 		FRA
+	}
+
+	public enum Difficulty{
+		EASY,
+		MEDIUM,
+		HARD
 	}
 
 	private String word_;
@@ -30,7 +36,7 @@ public class Vocable implements Serializable {
 
 	private ArrayList<Tags> tags_;
 
-	private int rating_;
+	private Difficulty rating_;
 
 	public Vocable getTranslation(@NotNull Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
 	{
@@ -131,6 +137,41 @@ public class Vocable implements Serializable {
 				return "Language not Implemented";
 		}
   }
+
+  public String getDifficulty()
+  {
+  	switch (rating_)
+	{
+		case EASY:
+			return "Easy";
+		case MEDIUM:
+			return "Medium";
+		case HARD:
+			return "Hard";
+		default:
+			return "Medium";
+	}
+  }
+
+	public Difficulty getRating_() {
+		return rating_;
+	}
+
+	public void changeOnLeftClick()
+  {
+  	if(rating_ == Difficulty.HARD)
+  		rating_ = Difficulty.MEDIUM;
+  	else if(rating_ == Difficulty.MEDIUM)
+  		rating_ = Difficulty.EASY;
+  }
+
+	public void changeOnRightClick()
+	{
+		if(rating_ == Difficulty.EASY)
+			rating_ = Difficulty.MEDIUM;
+		else if(rating_ == Difficulty.MEDIUM)
+			rating_ = Difficulty.HARD;
+	}
 
 	public boolean addTag(Tags addTag)
 	{

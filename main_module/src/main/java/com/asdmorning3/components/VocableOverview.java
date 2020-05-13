@@ -5,8 +5,14 @@ import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class VocableOverview {
 
@@ -44,12 +50,50 @@ public class VocableOverview {
 
 
 		String data_[][] = dict.getTable();
-		table_ = new JTable(data_, columns_);
+		CustomTableModel customTableModel = new CustomTableModel(data_, columns_);
+		table_ = new JTable(customTableModel);
 
+		table_.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+				if(table_.getSelectedColumn() == 3)
+				{
+					if (SwingUtilities.isRightMouseButton(mouseEvent))
+					{
+					}
+					else if(SwingUtilities.isLeftMouseButton(mouseEvent))
+					{
+					}
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent mouseEvent) {
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent mouseEvent) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent mouseEvent) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent mouseEvent) {
+
+			}
+		});
 
 		pane_ = new JScrollPane(table_);
 		frame_.setSize(Vocable.Language.class.getEnumConstants().length * WIDTH, 400);
 		frame_.add(pane_);
+
+
+
 	}
 
 	public void changeVisibility(boolean visibility)
@@ -61,4 +105,16 @@ public class VocableOverview {
 	{
 		return pane_;
 	}
+	class CustomTableModel extends DefaultTableModel
+	{
+		public CustomTableModel(String[][] data, String[] columns) {
+			super(data, columns);
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	}
+
 }
