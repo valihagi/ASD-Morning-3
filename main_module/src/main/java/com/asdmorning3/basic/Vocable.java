@@ -5,15 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Vocable implements Serializable {
 
 	public Vocable(@NotNull String word, @NotNull Language language) {
-		if (word.length() == 0)
-		{
-			throw new IllegalArgumentException("Word has to be at least of lentght one."); //TODO constant for interface language
-		}
 		this.word_ = word;
 		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
@@ -127,6 +122,8 @@ public class Vocable implements Serializable {
 				return "Deutsch";
 			case ENG:
 				return "English";
+			case FRA:
+				return "Français";
 			default:
 				return "Language not Implemented";
 		}
