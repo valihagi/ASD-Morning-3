@@ -18,6 +18,7 @@ public class Vocable implements Serializable {
 		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
 		this.tags_ = new ArrayList<Tags>();
+		this.rating_ = 2;
 	}
 
 	public enum Language {
@@ -33,6 +34,8 @@ public class Vocable implements Serializable {
 	private HashMap<Language, Vocable> translation_;
 
 	private ArrayList<Tags> tags_;
+
+	private int rating_;
 
 	public Vocable getTranslation(@NotNull Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
 	{

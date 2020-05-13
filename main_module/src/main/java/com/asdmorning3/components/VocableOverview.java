@@ -34,13 +34,16 @@ public class VocableOverview {
 		languages = new InterfaceLanguages();
 		interfaceLanguage_ = interfaceLanguage;
 		frame_ = new JFrame(languages.getString(interfaceLanguage, "overview"));
-		columns_ = new String[Vocable.Language.class.getEnumConstants().length];
+		columns_ = new String[Vocable.Language.class.getEnumConstants().length + 1];
 		int i = 0;
 		for (Vocable.Language language: Vocable.Language.class.getEnumConstants())
 		{
 			columns_[i] = Vocable.getLanguageWord(language);
 			i++;
 		}
+		columns_[i] = "Difficulty";
+
+
 		String data_[][] = dict.getTable();
 		table_ = new JTable(data_, columns_);
 

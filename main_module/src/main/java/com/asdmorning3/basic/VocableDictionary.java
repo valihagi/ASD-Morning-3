@@ -71,7 +71,7 @@ public class VocableDictionary implements Serializable {
 
 	public String[][] getTable()
 	{
-		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
+		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length + 1];
 		int row = 0;
 		int col = 0;
 		for (Vocable vocab : findVocable(Vocable.Language.GER)) {
@@ -80,6 +80,7 @@ public class VocableDictionary implements Serializable {
 				table[row][col] = vocab.getWord(language);
 				col++;
 			}
+			table[row][col] = "normal";
 			row++;
 		}
 		return table;
