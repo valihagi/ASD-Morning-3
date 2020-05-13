@@ -7,8 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+
+
 
 public class Edit {
 
@@ -17,7 +17,7 @@ public class Edit {
     JFrame frame;
     JPanel pane;
     JButton btnSubmit;
-    Object lock;
+    Object local_lock;
 
     JTextField txtFld1;
     JLabel lblLang1;
@@ -26,9 +26,11 @@ public class Edit {
     InterfaceLanguages.Languages lang;
     InterfaceLanguages languages;
     GridBagConstraints c;
+    JFrame parent_;
 
-    public Edit(VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang) {
-        lock = new Object();
+    public Edit(JFrame parent, VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang) {
+        parent_ = parent;
+        local_lock = new Object();
         languages = new InterfaceLanguages();
         vocab_dic = v;
         vocable = vc;
@@ -46,7 +48,6 @@ public class Edit {
         comboBoxLang1.setSelectedItem(vocable.getLanguage());
 
         frame.setSize(300, 300);
-
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -57,6 +58,7 @@ public class Edit {
         c.gridx = 0;
         c.gridy++;
         c.insets = new Insets(10, 15, 10, 20);
+
         comboBoxLang1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -91,22 +93,35 @@ public class Edit {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    vocable = vocab_dic.replace(vocable.getWord(),
-                            txtFld1.getText(), vocable.getLanguage());
+                    changeVocable(txtFld1.getText());
                 } catch (NullPointerException ex) {
                     System.out.println("(btnSaveEdit)one of the objects is null");
                 }
             }
         });
         pane.add(btnSubmit, c);
-        frame.add(pane,BorderLayout.CENTER);
-        frame.setVisible(true);
-}
+
+    }
+
     public void setIntLang(InterfaceLanguages.Languages lang)
     {
         lblLang1.setText(languages.getString(lang, "language"));
         lblWord1.setText(languages.getString(lang, "word"));
         btnSubmit.setText(languages.getString(lang, "save"));
         frame.setTitle(languages.getString(lang, "edit"));
+    }
+
+    public VocableDictionary edit() {
+        JDialog myDialog = new JDialog(parent_, "edit", Dialog.ModalityType.DOCUMENT_MODAL);
+        myDialog.add(pane);
+        myDialog.pack();
+        myDialog.setVisible(true);
+        return vocab_dic;
+    }
+
+    public void changeVocable(String new_vcb)
+    {
+        vocable = vocab_dic.replace(vocable.getWord(),
+                new_vcb, vocable.getLanguage());
     }
 }

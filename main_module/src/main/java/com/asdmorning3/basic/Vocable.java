@@ -66,17 +66,22 @@ public class Vocable implements Serializable {
 	public void editTranslation(Language language, String vocable)
 	{
 		Vocable tmp_vcb = translation_.get(language), new_vcb;
-		translation_.remove(language);
-		translation_.put(language, (new_vcb = new Vocable(vocable, language)));
-		for(Vocable.Language l : Vocable.Language.values())
-		{
-			if(l != language)
+		if(this.language_ == language)
+			word_ = vocable;
+		else {
+			translation_.remove(language);
+			translation_.put(language, (new_vcb = new Vocable(vocable, language)));
+
+			for(Vocable.Language l : Vocable.Language.values())
 			{
-				try {
-					if(tmp_vcb.getTranslation(l) != null)
-						new_vcb.addTranslation(tmp_vcb.getTranslation(l));
+				if(l != language)
+				{
+					try {
+						if(tmp_vcb.getTranslation(l) != null)
+							new_vcb.addTranslation(tmp_vcb.getTranslation(l));
+					}
+					catch(NullPointerException ex) {}
 				}
-				catch(NullPointerException ex) {}
 			}
 		}
 	}

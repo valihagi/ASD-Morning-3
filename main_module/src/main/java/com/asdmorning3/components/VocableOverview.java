@@ -6,6 +6,7 @@ import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ public class VocableOverview {
 	private InterfaceLanguages.Languages interfaceLanguage_;
 	private ArrayList<List<Vocable>> vocable_list_;
 	private static int  WIDTH = 200;
-	private Object[][] data_;
 	private String[] columns_;
 	private InterfaceLanguages languages;
 	private JPopupMenu popupMenu_;
@@ -57,11 +57,11 @@ public class VocableOverview {
 		item_.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				Vocable v = dict.findVocable(data_[table_.getSelectedRow()][table_.getSelectedColumn()],
+				Vocable v = dict_.findVocable(data_[table_.getSelectedRow()][table_.getSelectedColumn()],
 						Vocable.Language.class.getEnumConstants()[table_.getSelectedColumn()]).get(0);
-				Edit e = new Edit(dict, v, interfaceLanguage_);
+				Edit e = new Edit(frame_, dict_, v, interfaceLanguage_);
+				dict_ = e.edit();
 				String[] newData = dict_.getTable()[table_.getSelectedRow()];
-				//table_.setValueAt(newData, );
 				for(int c = 0; c < Vocable.Language.class.getEnumConstants().length; c++)
 					table_.setValueAt(newData[c], table_.getSelectedRow(), c);
 			}
@@ -81,7 +81,7 @@ public class VocableOverview {
 	{
 		VocableDictionary d = new VocableDictionary();
 		d.addVocable(new Vocable("hallo", Vocable.Language.GER),
-				new Vocable("hello", Vocable.Language.ENG));
+				new Vocable("hello", Vocable.Language.ENG), new Vocable("salut", Vocable.Language.FRA));
 		InterfaceLanguages.Languages lang = InterfaceLanguages.Languages.EN;
 		VocableOverview v = new VocableOverview(d, lang);
 	}
