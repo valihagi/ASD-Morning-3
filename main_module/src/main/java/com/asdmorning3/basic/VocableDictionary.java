@@ -2,12 +2,10 @@ package com.asdmorning3.basic;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 public class VocableDictionary implements Serializable {
 
@@ -37,7 +35,81 @@ public class VocableDictionary implements Serializable {
 		{
 			return new ArrayList<>();
 		}
+	}
 
+	public void save() throws IOException
+	{
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(System.getProperty("user.dir") + "/dictionary.save"));
+		oos.writeObject(vocableList);
+		oos.close();
+	}
+
+	public List<Vocable> findVocable(Vocable.Language language)
+	{
+		try{
+			return vocableList.stream().filter(
+					(vocable) -> (vocable.getLanguage().equals(language))
+			).collect(Collectors.toList());
+		}
+		catch (NullPointerException e)
+		{
+			return new ArrayList<>();
+		}
+	}
+
+	public List<String> findWord(Vocable.Language language)
+	{
+		try{
+			return vocableList.stream().filter(
+					(vocable) -> (vocable.getLanguage().equals(language))
+			).map(Vocable::getWord).collect(Collectors.toList());
+		}
+		catch (NullPointerException e)
+		{
+			return new ArrayList<>();
+		}
+	}
+
+	public String[][] getTable()
+	{
+		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
+		int row = 0;
+		int col = 0;
+		for (Vocable vocab : findVocable(Vocable.Language.GER)) {
+			col = 0;
+			for (Vocable.Language language : Vocable.Language.class.getEnumConstants()) {
+				table[row][col] = vocab.getWord(language);
+				col++;
+			}
+			row++;
+		}
+		return table;
+	}
+
+	public String[][] getTable(ArrayList<Vocable> vocables)
+	{
+		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
+		int row = 0;
+		int col = 0;
+		ArrayList<Vocable> germanVocab = new ArrayList<Vocable>();
+
+		for (Vocable vocab : vocables)
+		{
+			if(vocab.getLanguage() == Vocable.Language.GER)
+			{
+				germanVocab.add(vocab);
+			}
+		}
+
+		for (Vocable vocab : germanVocab) {
+			col = 0;
+			for (Vocable.Language language : Vocable.Language.class.getEnumConstants()) {
+				table[row][col] = vocab.getWord(language);
+				col++;
+			}
+			row++;
+		}
+		return table;
 	}
 
 	public void save(String path) throws IOException
@@ -55,10 +127,68 @@ public class VocableDictionary implements Serializable {
 		tagsList = (ArrayList<Tags>) ois.readObject();
 	}
 
+	public void load() throws IOException, ClassNotFoundException
+	{
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(System.getProperty("user.dir") + "/dictionary.save"));
+			vocableList = (HashSet<Vocable>) ois.readObject();
+		}
+		catch (FileNotFoundException ex)
+		{
+			System.out.println("File not Found");
+			System.out.println(ex.toString());
+		}
+	}
+
+	public Vocable replace(String old_vocab, String new_vocab, Vocable.Language lang)
+	{
+		for(Vocable i : findVocable(old_vocab, lang))
+		{
+			i.editTranslation(lang, new_vocab);
+			assert(i.getTranslation(lang).getWord() == new_vocab);
+			for(Vocable.Language l : Vocable.Language.values())
+			{
+				if(l != lang)
+				{
+					try {
+						i.getTranslation(l).editTranslation(lang, new_vocab);
+					}
+					catch(NullPointerException ex) {}
+				}
+			}
+			return i;
+		}
+		return null;
+	}
+
+	public List<Vocable> getAllFromLanguage(Vocable.Language lang)
+	{
+		List<Vocable> vocables = new ArrayList<>();
+		for(Vocable v : vocableList)
+		{
+			if(v.getLanguage() == lang)
+				vocables.add(v);
+		}
+		return vocables;
+	}
+
+	public boolean exists(Vocable v)
+	{
+		for(Vocable d : getAllFromLanguage(v.getLanguage()))
+			if(Objects.equals(d.getWord(), v.getWord()))
+				return true;
+		return false;
+	}
+
 	public void addVocable(Vocable ... vocables)
 	{
+		boolean german = false;
 		for (Vocable vocable: vocables)
 		{
+			if (vocable.getLanguage() == Vocable.Language.GER)
+			{
+				german = true;
+			}
 			for (Vocable translation: vocables)
 			{
 				if (vocable.getLanguage() != translation.getLanguage())
@@ -80,7 +210,21 @@ public class VocableDictionary implements Serializable {
 						}
 					}
 				}
+				else if(!exists(vocable))
+				{
+					vocableList.addAll(Arrays.asList(vocables));
+				}
 			}
+		}
+		ArrayList<Vocable> list = new ArrayList<Vocable>(Arrays.asList(vocables));
+		if (!german)
+		{
+			Vocable voc1 = new Vocable("", Vocable.Language.GER);
+			for (Vocable vcb : list)
+			{
+				vcb.addTranslation(voc1);
+			}
+			list.add(voc1);
 		}
 		vocableList.addAll(Arrays.asList(vocables));
 	}
@@ -238,4 +382,47 @@ public class VocableDictionary implements Serializable {
 		return  vocables;
 	}
 
+	public ArrayList<Vocable> sortVocablesByAlhpabet(ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(char alphabet = 'a'; alphabet <='z'; alphabet++ )
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getWord(Vocable.Language.ENG).charAt(0) == alphabet )
+					sortedVocables.add(vocable);
+			}
+		}
+		for (Vocable vocable : list)
+		{
+			if(vocable.getWord(Vocable.Language.ENG).isEmpty())
+				sortedVocables.add(vocable);
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> sortVocablesByAlhpabet(HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(char alphabet = 'a'; alphabet <='z'; alphabet++ )
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getWord(Vocable.Language.ENG).charAt(0) == alphabet )
+					sortedVocables.add(vocable);
+			}
+		}
+		for (Vocable vocable : list)
+		{
+			if(vocable.getWord(Vocable.Language.ENG).isEmpty())
+				sortedVocables.add(vocable);
+		}
+
+		return  sortedVocables;
+	}
+
 }
+

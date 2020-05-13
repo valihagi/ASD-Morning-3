@@ -1,16 +1,20 @@
 package com.asdmorning3.junit;
 
+import com.asdmorning3.basic.Tags;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,14 +33,6 @@ public class test001b {
 		return Stream.of(   Arguments.of("easy", Color.green),
 				Arguments.of("normal", Color.orange),
 				Arguments.of("difficult", Color.red));
-
-	}
-
-	static Stream<Arguments> ratingStream () {
-		return Stream.of(   Arguments.of(Vocable.Rating.NORMAL, Vocable.Rating.DIFFICULT, Vocable.Rating.VERY_EASY),
-				Arguments.of(Vocable.Rating.VERY_DIFFICULT, Vocable.Rating.EASY, Vocable.Rating.VERY_DIFFICULT),
-				Arguments.of(Vocable.Rating.EASY, Vocable.Rating.NORMAL, Vocable.Rating.VERY_EASY));
-
 	}
 
 	Vocable vocable1 = null;
@@ -166,29 +162,43 @@ public class test001b {
 	@ParameterizedTest
 	@DisplayName("Find Vocable")
 	@MethodSource("stringStream")
-	void findVocable(String english, String german)
-	{
-		try{
+	void findVocable(String english, String german) {
+		try {
 			initVocables(english, german);
-		}
-		catch (IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			System.out.println(e.getMessage());
 			return;
 		}
 		dictionary.addVocable(vocable1, vocable2);
 		String word_ = vocable1.getWord();
 		Vocable.Language language_ = vocable1.getLanguage();
-		assert(word_.length() >= 1);
+		assert (word_.length() >= 1);
 		assert (language_ != null);
 		List<Vocable> results = dictionary.findVocable(word_, language_);
 		System.out.println("found " + results.size() + " results");
-		for (Vocable vocable: results)
-		{
+		for (Vocable vocable : results) {
 			assert (vocable.equals(vocable1));
 		}
 	}
 
+	void setUpDict()
+	{
+		dictionary.addVocable(new Vocable("hello", Vocable.Language.ENG), new Vocable("hallo", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("test", Vocable.Language.ENG), new Vocable("Test", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("test1", Vocable.Language.ENG), new Vocable("Test1", Vocable.Language.GER));
+	}
+
+	@Test
+	@DisplayName("create Table")
+	void createTable()
+	{
+		dictionary = new VocableDictionary();
+		setUpDict();
+
+		System.out.println(Arrays.deepToString(dictionary.getTable()));
+  }
+
+  
 	@ParameterizedTest
 	@DisplayName("Tags Test")
 	@MethodSource("tagsStream")
@@ -205,9 +215,9 @@ public class test001b {
 		}
 
 		dictionary.addVocable(vocable1, vocable2);
-		var tag = dictionary.createTag(description, color);
+		Tags tag = dictionary.createTag(description, color);
 		dictionary.addTagToVocable(tag, dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0));
-		var tag2 = dictionary.createTag("verb", Color.black);
+		Tags tag2 = dictionary.createTag("verb", Color.black);
 		dictionary.addTagToVocable(tag2, dictionary.findVocable(vocable1.getWord(), vocable1.getLanguage()).get(0));
 
 		try{
@@ -235,79 +245,49 @@ public class test001b {
 
 		dictionary.removeTagToVocable(dictionary.getTagByDescription(description), vocable);
 		assert(vocable.getTags().size() == 1);
-
 	}
 
-	@ParameterizedTest
-	@DisplayName("Rating Test")
-	@MethodSource("ratingStream")
-	void ratingTest(Vocable.Rating rating1, Vocable.Rating rating2, Vocable.Rating rating3)
+
+	@Test
+	@DisplayName("Sort Test")
+	void sortTest()
 	{
-		vocable1 = null;
-		vocable2 = null;
-		vocable3 = null;
 		dictionary = new VocableDictionary();
-		String errorMessage = null;
-		try{
-			vocable1 = new Vocable("Hello", Vocable.Language.ENG);
-		}
-		catch (IllegalArgumentException e)
+		dictionary.addVocable(new Vocable("b", Vocable.Language.ENG), new Vocable("B", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("c", Vocable.Language.ENG), new Vocable("C", Vocable.Language.GER));
+		dictionary.addVocable(new Vocable("a", Vocable.Language.ENG), new Vocable("A", Vocable.Language.GER));
+
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+		sortedVocables = dictionary.sortVocablesByAlhpabet(dictionary.getVocableList());
+
+		assert(sortedVocables.get(0).getWord(Vocable.Language.ENG).charAt(0) <
+				sortedVocables.get(2).getWord(Vocable.Language.ENG).charAt(0));
+	}
+
+
+	@Test
+	@DisplayName("JList Test")
+	void jlistTest()
+	{
+		JList list = new JList();
+		String[] strings = {"a", "b", "d", "c"};
+		list.setListData(strings);
+
+
+		ArrayList<String> sortedVocables = new ArrayList<>();
+
+		for(int i = 0 ; i < list.getModel().getSize();i++)
 		{
-			errorMessage = "vocable 1 triggered: " + e.getMessage();
-			throw new IllegalArgumentException(errorMessage);
-		}
-		try{
-			vocable2 = new Vocable("Hallo", Vocable.Language.GER);
-
-		}
-		catch (IllegalArgumentException e)
-		{
-			errorMessage = "vocable 2 triggered: " + e.getMessage();
-			throw new IllegalArgumentException(errorMessage);
-		}
-		try{
-			vocable3 = new Vocable("Hey", Vocable.Language.ENG);
-		}
-		catch (IllegalArgumentException ignored) { }
-
-		dictionary.addVocable(vocable1,vocable2,vocable3);
-
-
-		vocable1.changeRating(rating1);
-		vocable2.changeRating(rating2);
-		vocable3.changeRating(rating3);
-
-		assert(vocable1.getRating() == rating1);
-
-		ArrayList<Vocable> sortedList = dictionary.getVocablesSortedAsc(dictionary.getVocableList());
-
-		int index = 0;
-		for(Vocable vocable : sortedList)
-		{
-			int temp = vocable.getRating().ordinal();
-			assert(temp >= index);
-			index = temp;
+			sortedVocables.add((String) (list.getModel().getElementAt(i)));
 		}
 
-		sortedList = dictionary.getVocablesSortedDesc(dictionary.getVocableList());
+		Collections.sort(sortedVocables);
 
-		index = 6;
-		for(Vocable vocable : sortedList)
-		{
-			int temp = vocable.getRating().ordinal();
-			assert(temp <= index);
-			index = temp;
-		}
-
-		vocable1.changeRating(Vocable.Rating.DIFFICULT);
-		vocable2.changeRating(Vocable.Rating.DIFFICULT);
-		vocable3.changeRating(Vocable.Rating.NORMAL);
-
-		ArrayList<Vocable> list = dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, sortedList);
-
-		assert (dictionary.getVocablesByRating(Vocable.Rating.DIFFICULT, dictionary.getVocableList()).size() == 2);
+		list = new JList(sortedVocables.toArray());
 
 
-
+		assert(list.getModel().getElementAt(0).toString().charAt(0) <
+				list.getModel().getElementAt(1).toString().charAt(0));
 	}
 }
+
