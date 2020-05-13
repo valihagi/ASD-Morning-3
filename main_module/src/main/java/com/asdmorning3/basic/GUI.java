@@ -13,8 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.*;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class GUI {
@@ -31,11 +30,14 @@ public class GUI {
     JMenuItem itemLoad;
     InterfaceLanguages languages;
 
+<<<<<<< HEAD
     JMenu menuInterface;
     JMenuItem itemStudy;
     JMenuItem itemOverview;
     JMenuItem itemTest;
 
+=======
+>>>>>>> 4ec2b002f44946cecdfa1d8534101a0ad2a23ec5
     JMenu menuLang;
     HashMap<JMenuItem, InterfaceLanguages.Languages> itemLangs;
 
@@ -50,6 +52,9 @@ public class GUI {
     public JComboBox<Vocable.Language> comboBoxLang2;
     InterfaceLanguages.Languages lang;
 
+    VocableOverview overview;
+    studyInterface study;
+
     public GUI(VocableDictionary v)
     {
         languages = new InterfaceLanguages();
@@ -60,10 +65,13 @@ public class GUI {
         //btnOverview = new JButton();
         btnSubmit = new JButton();
 
+<<<<<<< HEAD
         menuInterface = new JMenu();
         itemStudy = new JMenuItem();
         itemOverview = new JMenuItem();
         itemTest = new JMenuItem();
+=======
+>>>>>>> 4ec2b002f44946cecdfa1d8534101a0ad2a23ec5
 
         menuLang = new JMenu();
         itemLangs = new HashMap<>();
@@ -77,6 +85,8 @@ public class GUI {
         txtFld2 = new JTextField();
         lblLang1 = new JLabel();
         lang = (InterfaceLanguages.Languages) InterfaceLanguages.Languages.DE;
+        overview = new VocableOverview(vcb, lang);
+        study = new studyInterface(vcb, lang);
         frame = new JFrame();
         lblLang2 = new JLabel();
         lblWord1 = new JLabel();
@@ -128,6 +138,7 @@ public class GUI {
         c.insets = new Insets(10, 0, 0, 55);
         pane.add(txtFld2, c);
 
+
         //study interface
         //vocabulary overview
 
@@ -146,7 +157,8 @@ public class GUI {
                 {
                     System.out.println("(btnGUI)one of the objects is null");
                 }
-             }
+                refreshTabs();
+            }
         });
         pane.add(btnSubmit, c);
 
@@ -194,6 +206,7 @@ public class GUI {
                 if(toload.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
                 {
                     vcb.load(toload.getSelectedFile().getPath());
+                    refreshTabs();
                 }
 
             }
@@ -204,23 +217,6 @@ public class GUI {
         });
         menuFile.add(itemLoad);
 
-        itemOverview.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                VocableOverview overview = new VocableOverview(vcb, lang);
-                //TODO: add new pane to the tabbed pane
-            }
-        });
-        menuInterface.add(itemOverview);
-
-        itemStudy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                studyInterface std = new studyInterface(vcb, lang);
-                //TODO: add new pane to the tabbed pane
-            }
-        });
-        menuInterface.add(itemStudy);
 
         itemTest.addActionListener(new ActionListener() {
             @Override
@@ -246,11 +242,12 @@ public class GUI {
         }
 
         menuBar.add(menuFile);
-        menuBar.add(menuInterface);
         menuBar.add(menuLang);
 
         frame.add(menuBar, BorderLayout.NORTH);
-        tabbedPane.addTab("Tab " + (tabbedPane.getTabCount() + 1), pane);
+        tabbedPane.addTab(languages.getString(lang, "add"), pane);
+        tabbedPane.addTab(languages.getString(lang, "overview"), overview.getContent());
+        tabbedPane.addTab(languages.getString(lang, "study-interface"), study.getContent());
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -295,9 +292,26 @@ public class GUI {
         frame.setTitle(languages.getString(lang, "vocab-trainer"));
         menuFile.setText(languages.getString(lang, "file"));
         itemLoad.setText(languages.getString(lang, "load"));
+<<<<<<< HEAD
         menuInterface.setText(languages.getString(lang, "interface"));
         itemOverview.setText(languages.getString(lang, "overview"));
         itemStudy.setText(languages.getString(lang, "study"));
         itemTest.setText(languages.getString(lang, "test"));
+=======
+        tabbedPane.setTitleAt(0, languages.getString(lang, "add"));
+        tabbedPane.setTitleAt(1, languages.getString(lang, "overview"));
+        tabbedPane.setTitleAt(2, languages.getString(lang, "study"));
+    }
+
+    private void refreshTabs()
+    {
+        Component component;
+        overview = new VocableOverview(vcb, lang);
+        study = new studyInterface(vcb, lang);
+        tabbedPane.setComponentAt(1, overview.getContent());
+        tabbedPane.setComponentAt(2, study.getContent());
+>>>>>>> 4ec2b002f44946cecdfa1d8534101a0ad2a23ec5
     }
 }
+
+
