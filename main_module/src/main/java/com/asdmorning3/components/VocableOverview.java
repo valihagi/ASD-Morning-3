@@ -3,6 +3,7 @@ package com.asdmorning3.components;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
+import org.intellij.lang.annotations.Language;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -46,7 +47,7 @@ public class VocableOverview {
 		columns_[i] = "Difficulty";
 
 
-		String data_[][] = dict.getTable();
+		String data_[][] = dict.getTable(languages, interfaceLanguage_);
 		CustomTableModel customTableModel = new CustomTableModel(data_, columns_);
 		table_ = new JTable(customTableModel);
 
@@ -57,7 +58,7 @@ public class VocableOverview {
 				if(table_.getSelectedColumn() == rating_col)
 				{
 					int row = table_.getSelectedRow();
-					Vocable.Difficulty difficulty;
+					String difficulty;
 					ArrayList<String> row_strings = new ArrayList<>(rating_col);
 					for (int i = 0 ; i < rating_col; i++)
 					{
@@ -65,13 +66,11 @@ public class VocableOverview {
 					}
 					if (SwingUtilities.isRightMouseButton(mouseEvent))
 					{
-						difficulty = dict.increaseDifficulty(row_strings);
+						difficulty = dict.changeDifficulty(row_strings, false);
 					}
 					else if(SwingUtilities.isLeftMouseButton(mouseEvent))
 					{
-						difficulty = dict.increaseDifficulty(row_strings);
-
-						//dict.decreaseDifficulty()
+						difficulty = dict.changeDifficulty(row_strings, true);
 					}
 					else
 					{
@@ -108,9 +107,9 @@ public class VocableOverview {
 
 	}
 
-	public void updateDifficulty(int row, Vocable.Difficulty difficulty)
+	public void updateDifficulty(int row, String difficulty)
 	{
-		table_.setValueAt(difficulty.toString(),row, Vocable.Language.class.getEnumConstants().length);
+		table_.setValueAt(languages.getString(interfaceLanguage_, difficulty), row, Vocable.Language.class.getEnumConstants().length);
 	}
 
 	public void changeVisibility(boolean visibility)

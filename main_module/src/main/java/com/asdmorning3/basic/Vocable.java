@@ -167,9 +167,8 @@ public class Vocable implements Serializable {
 			return "Medium";
 		case HARD:
 			return "Hard";
-		default:
-			return "Medium";
 	}
+	return "Not rated!";
   }
 
 	public Difficulty getRating_()
