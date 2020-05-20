@@ -3,6 +3,7 @@ package com.asdmorning3.test;
 import com.asdmorning3.basic.Tags;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
+import com.asdmorning3.components.VocableOverview;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -39,7 +40,10 @@ public class studyInterface {
 
     private java.util.List<Vocable> vocableList;
 
+    JComboBox toLanguage = null;
+
     public studyInterface(VocableDictionary dictionary_, InterfaceLanguages.Languages lang) {
+
         languages = new InterfaceLanguages();
         dictionary = dictionary_;
         interface_languages = lang;
@@ -55,7 +59,7 @@ public class studyInterface {
         }
 
         final JComboBox fromLanguage = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
-        final JComboBox toLanguage = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
+        toLanguage = new JComboBox(new DefaultComboBoxModel<String>(languages.toArray(new String[0])));
         final JComboBox setAnotherLanguage;
 
         c.gridx = 0;
@@ -136,10 +140,26 @@ public class studyInterface {
                 btnsortratingasc = new JButton("sort by rating ascending");
                 c1.gridx = 0;
                 c1.gridy = 2;
+                btnsortratingasc.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        list.setModel(sortJlistByRatingAsc(list));
+
+                        frame2.setVisible(false);
+                    }
+
+                });
                 pane1.add(btnsortratingasc, c1);
                 btnsortratingdesc = new JButton("sort by rating descending");
                 c1.gridx = 2;
                 c1.gridy = 2;
+                btnsortratingdesc.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        list.setModel(sortJlistByRatingDesc(list));
+
+                        frame2.setVisible(false);
+                    }
+
+                });
                 pane1.add(btnsortratingdesc, c1);
                 lblfilter = new JLabel("filter vocabulary");
                 c1.gridx = 1;
@@ -152,6 +172,14 @@ public class studyInterface {
                 btnratingsubmit = new JButton("filter by selected rating");
                 c1.gridx = 2;
                 c1.gridy = 4;
+                btnratingsubmit.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        list.setModel(filterJlistByRating(list, Vocable.Rating.valueOf(comboboxrating.getSelectedItem().toString())));
+
+                        frame2.setVisible(false);
+                    }
+
+                });
                 pane1.add(btnratingsubmit, c1);
                 ArrayList<Tags> taglist = dictionary_.getTagsList();
                 ArrayList<String> taglist2 = new ArrayList<String>();
@@ -168,6 +196,13 @@ public class studyInterface {
                 btntagsubmit = new JButton("filter by selected tag");
                 c1.gridx = 2;
                 c1.gridy = 5;
+                btntagsubmit.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        list.setModel(filterJlistByTag(list, dictionary.getTagByDescription(comboboxtag.getSelectedItem().toString())));
+                        frame2.setVisible(false);
+                    }
+
+                });
                 pane1.add(btntagsubmit, c1);
 
                 frame2.add(pane1);
@@ -227,7 +262,6 @@ public class studyInterface {
 
         });
         setIntLang(lang);
-
     }
 
     public void setIntLang(InterfaceLanguages.Languages lang) {
@@ -257,7 +291,7 @@ public class studyInterface {
             sortedVocables.add((String) (list.getModel().getElementAt(i)));
         }
 
-        Collections.sort(sortedVocables);
+        Collections.sort(sortedVocables, String.CASE_INSENSITIVE_ORDER);
 
         for(String val : sortedVocables)
             model.addElement(val);
@@ -275,7 +309,7 @@ public class studyInterface {
             sortedVocables.add((String) (list.getModel().getElementAt(i)));
         }
 
-        Collections.sort(sortedVocables);
+        Collections.sort(sortedVocables, String.CASE_INSENSITIVE_ORDER);
         Collections.reverse(sortedVocables);
 
         for(String val : sortedVocables)
@@ -284,25 +318,140 @@ public class studyInterface {
         return model;
     }
 
-    /*public DefaultListModel sortJlistByRatingAsc(JList list)
+    public DefaultListModel sortJlistByRatingAsc(JList list)
     {
         DefaultListModel<String> model
                 = new DefaultListModel<>();
         ArrayList<String> sortedVocables = new ArrayList<>();
-        for(int i = 0 ; i < list.getModel().getSize(); i++)
+
+        Object obj = toLanguage.getSelectedItem();
+        String currentLanguage = String.valueOf(obj);
+
+        List<Vocable> langList =  dictionary.getAllFromLanguage(language_list.get(currentLanguage));
+
+        ArrayList<Vocable> langList2 = new ArrayList<>();
+
+        if(language_list.get(currentLanguage) != Vocable.Language.GER)
         {
-            sortedVocables.add((String) (list.getModel().getElementAt(i)));
+            for(Vocable vocable : langList)
+                langList2.add(vocable.getTranslation(Vocable.Language.GER));
         }
+        else
+            langList2.addAll(langList);
 
         for (Vocable.Rating rating : Vocable.Rating.values())
         {
-            ArrayList<Vocable> list123 = dictionary.getVocablesByRating(rating, dictionary.getVocableList());
-            sortedVocables.addAll(list123);
+            ArrayList<Vocable> tempList = dictionary.getVocablesByRating(rating, langList2);
+
+            for (Vocable vocable : tempList)
+                sortedVocables.add((vocable.getWord(language_list.get(currentLanguage))));
         }
 
         for(String val : sortedVocables)
             model.addElement(val);
 
         return model;
-    }*/
+    }
+
+    public DefaultListModel sortJlistByRatingDesc(JList list)
+    {
+        DefaultListModel<String> model
+                = new DefaultListModel<>();
+        ArrayList<String> sortedVocables = new ArrayList<>();
+
+        Object obj = toLanguage.getSelectedItem();
+        String currentLanguage = String.valueOf(obj);
+
+        List<Vocable> langList =  dictionary.getAllFromLanguage(language_list.get(currentLanguage));
+
+        ArrayList<Vocable> langList2 = new ArrayList<>();
+
+        if(language_list.get(currentLanguage) != Vocable.Language.GER)
+        {
+            for(Vocable vocable : langList)
+                langList2.add(vocable.getTranslation(Vocable.Language.GER));
+        }
+        else
+            langList2.addAll(langList);
+
+        for (Vocable.Rating rating : Vocable.Rating.values())
+        {
+            ArrayList<Vocable> tempList = dictionary.getVocablesByRating(rating, langList2);
+
+            for (Vocable vocable : tempList)
+                sortedVocables.add((vocable.getWord(language_list.get(currentLanguage))));
+        }
+
+        Collections.reverse(sortedVocables);
+        for(String val : sortedVocables)
+            model.addElement(val);
+
+        return model;
+    }
+
+    public DefaultListModel filterJlistByRating(JList list, Vocable.Rating selectedRating)
+    {
+        DefaultListModel<String> model
+                = new DefaultListModel<>();
+        ArrayList<String> sortedVocables = new ArrayList<>();
+
+        Object obj = toLanguage.getSelectedItem();
+        String currentLanguage = String.valueOf(obj);
+
+        List<Vocable> langList =  dictionary.getAllFromLanguage(language_list.get(currentLanguage));
+
+        ArrayList<Vocable> langList2 = new ArrayList<>();
+
+        if(language_list.get(currentLanguage) != Vocable.Language.GER)
+        {
+            for(Vocable vocable : langList)
+                langList2.add(vocable.getTranslation(Vocable.Language.GER));
+        }
+        else
+            langList2.addAll(langList);
+
+        ArrayList<Vocable> tempList = dictionary.getVocablesByRating(selectedRating, langList2);
+
+        for (Vocable vocable : tempList)
+            sortedVocables.add((vocable.getWord(language_list.get(currentLanguage))));
+
+        for(String val : sortedVocables)
+            model.addElement(val);
+
+        return model;
+    }
+
+    public DefaultListModel filterJlistByTag(JList list, Tags selectedTag)
+    {
+
+        DefaultListModel<String> model
+                = new DefaultListModel<>();
+        ArrayList<String> sortedVocables = new ArrayList<>();
+
+        Object obj = toLanguage.getSelectedItem();
+        String currentLanguage = String.valueOf(obj);
+
+        List<Vocable> langList =  dictionary.getAllFromLanguage(language_list.get(currentLanguage));
+
+        ArrayList<Vocable> langList2 = new ArrayList<>();
+
+        if(language_list.get(currentLanguage) != Vocable.Language.GER)
+        {
+            for(Vocable vocable : langList)
+                langList2.add(vocable.getTranslation(Vocable.Language.GER));
+        }
+        else
+            langList2.addAll(langList);
+
+        ArrayList<Vocable> tempList = dictionary.getVocablesByTag(selectedTag, langList2);
+
+        for (Vocable vocable : tempList)
+            sortedVocables.add((vocable.getWord(language_list.get(currentLanguage))));
+
+        for(String val : sortedVocables)
+            model.addElement(val);
+
+        return model;
+    }
+    
 }
