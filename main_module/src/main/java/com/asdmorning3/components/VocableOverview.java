@@ -37,7 +37,6 @@ public class VocableOverview {
 
 	public VocableOverview(VocableDictionary dict, InterfaceLanguages.Languages interfaceLanguage)
 	{
-		// TODO implement changing header of JFrame according to InterfaceLanguage
 		languages = new InterfaceLanguages();
 		interfaceLanguage_ = interfaceLanguage;
 		frame_ = new JFrame(languages.getString(interfaceLanguage, "overview"));
@@ -53,7 +52,9 @@ public class VocableOverview {
 			columns_[i] = Vocable.getLanguageWord(language);
 			i++;
 		}
+
 		String data_[][] = dict.getTable();
+
 		table_ = new JTable(data_, columns_);
 
 		item_.addActionListener(new ActionListener() {
@@ -91,6 +92,7 @@ public class VocableOverview {
 	public JScrollPane getContent()
 	{
 		return pane_;
+
 	}
 
 	public static void main(String args[])
@@ -99,5 +101,6 @@ public class VocableOverview {
 		d.addVocable(new Vocable("hallo", Vocable.Language.GER), new Vocable("salut", Vocable.Language.FRA));
 		InterfaceLanguages.Languages lang = InterfaceLanguages.Languages.EN;
 		VocableOverview v = new VocableOverview(d, lang);
+
 	}
 }
