@@ -80,7 +80,7 @@ public class VocableDictionary implements Serializable {
 				table[row][col] = vocab.getWord(language);
 				col++;
 			}
-			table[row][col] = vocab.getDifficulty();
+			table[row][col] = vocab.getDifficultyString();
 			row++;
 		}
 		return table;
@@ -239,6 +239,35 @@ public class VocableDictionary implements Serializable {
 	public void removeTagToVocable(Tags tag, Vocable vocable)
 	{
 		boolean removeSuccess = vocable.removeTag(tag);
+	}
+
+	public Vocable.Difficulty increaseDifficulty(List<String> row_strings) {
+		ArrayList<List<Vocable>> arrays = new ArrayList<>(row_strings.size());
+		int i = 0;
+		for (String s : row_strings)
+		{
+			arrays.add(i, findVocable(s, Vocable.Language.class.getEnumConstants()[i]));
+			i++;
+		}
+		Vocable.Difficulty difficulty = Vocable.Difficulty.MEDIUM;
+		for (int k = 0; k < arrays.get(0).size(); k++)
+		{
+			if (arrays.get(0).get(k).getWord().equals(row_strings.get(0)))
+			{
+				for (int j = 1; j < Vocable.Language.class.getEnumConstants().length; j++)
+				{
+
+					if (arrays.get(0).get(k).getWord(Vocable.Language.class.getEnumConstants()[j])
+							.equals(row_strings.get(j)))
+					{
+						arrays.get(0).get(k).increaseDifficulty();
+						difficulty = arrays.get(0).get(k).getRating_();
+						break;
+					}
+				}
+			}
+		}
+		return difficulty;
 	}
 
 }

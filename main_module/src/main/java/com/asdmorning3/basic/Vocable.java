@@ -16,6 +16,25 @@ public class Vocable implements Serializable {
 		this.rating_ = Difficulty.MEDIUM;
 	}
 
+	public void increaseDifficulty() {
+		if(rating_ == Difficulty.EASY)
+			rating_ = Difficulty.MEDIUM;
+		else if(rating_ == Difficulty.MEDIUM)
+			rating_ = Difficulty.HARD;
+		else if (rating_ == Difficulty.HARD)
+			rating_ = Difficulty.EASY;
+	}
+
+	public void decreaseDifficulty() {
+		if(rating_ == Difficulty.HARD)
+			rating_ = Difficulty.MEDIUM;
+		else if(rating_ == Difficulty.MEDIUM)
+			rating_ = Difficulty.EASY;
+		else if(rating_ == Difficulty.EASY)
+			rating_ = Difficulty.HARD;
+	}
+
+
 	public enum Language {
 		ENG,
 		GER,
@@ -138,7 +157,7 @@ public class Vocable implements Serializable {
 		}
   }
 
-  public String getDifficulty()
+  public String getDifficultyString()
   {
   	switch (rating_)
 	{
@@ -153,25 +172,11 @@ public class Vocable implements Serializable {
 	}
   }
 
-	public Difficulty getRating_() {
+	public Difficulty getRating_()
+	{
 		return rating_;
 	}
 
-	public void changeOnLeftClick()
-  {
-  	if(rating_ == Difficulty.HARD)
-  		rating_ = Difficulty.MEDIUM;
-  	else if(rating_ == Difficulty.MEDIUM)
-  		rating_ = Difficulty.EASY;
-  }
-
-	public void changeOnRightClick()
-	{
-		if(rating_ == Difficulty.EASY)
-			rating_ = Difficulty.MEDIUM;
-		else if(rating_ == Difficulty.MEDIUM)
-			rating_ = Difficulty.HARD;
-	}
 
 	public boolean addTag(Tags addTag)
 	{

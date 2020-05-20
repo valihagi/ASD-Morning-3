@@ -5,14 +5,11 @@ import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.MouseListener;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VocableOverview {
 
@@ -56,14 +53,31 @@ public class VocableOverview {
 		table_.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent mouseEvent) {
-				if(table_.getSelectedColumn() == 3)
+				int rating_col = Vocable.Language.class.getEnumConstants().length;
+				if(table_.getSelectedColumn() == rating_col)
 				{
+					int row = table_.getSelectedRow();
+					Vocable.Difficulty difficulty;
+					ArrayList<String> row_strings = new ArrayList<>(rating_col);
+					for (int i = 0 ; i < rating_col; i++)
+					{
+						row_strings.add(i,(String)table_.getValueAt(row, i));
+					}
 					if (SwingUtilities.isRightMouseButton(mouseEvent))
 					{
+						difficulty = dict.increaseDifficulty(row_strings);
 					}
 					else if(SwingUtilities.isLeftMouseButton(mouseEvent))
 					{
+						difficulty = dict.increaseDifficulty(row_strings);
+
+						//dict.decreaseDifficulty()
 					}
+					else
+					{
+						return;
+					}
+					updateDifficulty(row, difficulty);
 				}
 			}
 
@@ -92,8 +106,11 @@ public class VocableOverview {
 		frame_.setSize(Vocable.Language.class.getEnumConstants().length * WIDTH, 400);
 		frame_.add(pane_);
 
+	}
 
-
+	public void updateDifficulty(int row, Vocable.Difficulty difficulty)
+	{
+		table_.setValueAt(difficulty.toString(),row, Vocable.Language.class.getEnumConstants().length);
 	}
 
 	public void changeVisibility(boolean visibility)
