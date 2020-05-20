@@ -7,6 +7,7 @@ import com.asdmorning3.test.InterfaceLanguages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.Assert;
+import org.mockito.*;
 
 public class test003 {
 
@@ -38,9 +39,14 @@ public class test003 {
 	}
 
 	@Test
-	@DisplayName("test Editing Scrren")
+	@DisplayName("test .edit() returnValue")
 	void testVocableOverview_returnOnEdit()
 	{
-
+		VocableDictionary d = new VocableDictionary();
+		d.addVocable(new Vocable("hallo", Vocable.Language.GER),
+				new Vocable("hello", Vocable.Language.ENG), new Vocable("salut", Vocable.Language.FRA));
+		Edit e = Mockito.mock(Edit.class);
+		Mockito.when(e.edit()).thenReturn(d);
+		Assert.assertEquals(d, e.edit());
 	}
 }

@@ -18,6 +18,8 @@ public class Vocable implements Serializable {
 		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
 		this.tags_ = new ArrayList<Tags>();
+		this.rating_ = Rating.NORMAL;
+
 	}
 
 	public enum Language {
@@ -26,13 +28,28 @@ public class Vocable implements Serializable {
 		FRA
 	}
 
+	public enum Rating
+	{
+		VERY_EASY,
+		EASY,
+		NORMAL,
+		DIFFICULT,
+		VERY_DIFFICULT
+	}
+
 	private String word_;
 
 	private Language language_ ;
 
+	private Rating rating_;
+
 	private HashMap<Language, Vocable> translation_;
 
 	private ArrayList<Tags> tags_;
+
+	public boolean contain(Language lang){
+		return translation_.containsKey(lang);
+	}
 
 	public Vocable getTranslation(@NotNull Language language) throws IndexOutOfBoundsException, NullPointerException, IllegalArgumentException
 	{
@@ -45,16 +62,19 @@ public class Vocable implements Serializable {
 
 	public void addTranslation(@NotNull Vocable vocable) throws IllegalArgumentException
 	{
+		System.out.println(vocable.getLanguage() + "/" + language_ + "\t" + vocable.getWord()+"/"+word_);
 		if (vocable.getLanguage() == language_)
 		{
 			throw new IllegalArgumentException("Can't have a Translation from " + language_ + " to " + vocable.getLanguage()); //TODO constant for interface language
 		}
+		System.out.println(language_ + "->" + vocable.getLanguage());
 		translation_.put(vocable.getLanguage(), vocable);
 		vocable.viceVersaTranslation(language_, this);
 	}
 
 	public void viceVersaTranslation(Language language, Vocable vocable)
 	{
+		System.out.println(language_ + "->" + vocable.getLanguage());
 		translation_.put(language, vocable);
 	}
 
@@ -134,11 +154,11 @@ public class Vocable implements Serializable {
 			case ENG:
 				return "English";
 			case FRA:
-				return "Francais";
+				return "Français";
 			default:
 				return "Language not Implemented";
 		}
-  }
+	}
 
 	public boolean addTag(Tags addTag)
 	{
@@ -178,5 +198,16 @@ public class Vocable implements Serializable {
 			}
 		}
 		return false;
-  }
+	}
+
+	public void changeRating(Rating rating)
+	{
+		this.rating_ = rating;
+	}
+
+	public Rating getRating()
+	{
+		return this.rating_;
+	}
+
 }

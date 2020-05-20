@@ -27,8 +27,10 @@ public class Edit {
     InterfaceLanguages languages;
     GridBagConstraints c;
     JFrame parent_;
+    boolean new_;
 
     public Edit(JFrame parent, VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang) {
+        new_ = false;
         parent_ = parent;
         local_lock = new Object();
         languages = new InterfaceLanguages();
@@ -64,8 +66,21 @@ public class Edit {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     if (!((Vocable.Language) comboBoxLang1.getSelectedItem()).equals(vocable.getLanguage())) {
-                        txtFld1.setText((vocable.getTranslation((Vocable.Language) comboBoxLang1.getSelectedItem())).getWord());
-                        vocable = vocable.getTranslation((Vocable.Language) comboBoxLang1.getSelectedItem());
+                        if(vocable.contain((Vocable.Language) comboBoxLang1.getSelectedItem())){
+                            txtFld1.setText((vocable.getTranslation((Vocable.Language) comboBoxLang1.getSelectedItem())).getWord());
+                            vocable = vocable.getTranslation((Vocable.Language) comboBoxLang1.getSelectedItem());
+                            new_ = false;
+                        }
+                        else{
+                            txtFld1.setText("");
+                            new_ = true;
+                        }
+                    }
+                    else{
+                        if(txtFld1.getText().equals("") || new_){
+                            txtFld1.setText(vocable.getWord());
+                            new_ = false;
+                        }
                     }
                 } catch (NullPointerException ex) {
                     txtFld1.setText("");
@@ -93,7 +108,21 @@ public class Edit {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    changeVocable(txtFld1.getText());
+                    if(!new_)
+                        changeVocable(txtFld1.getText());
+                    else{
+                        System.out.println("curr vocab: " +vocable.getWord() + vocable.getLanguage());
+                        Vocable v = new Vocable(txtFld1.getText(), (Vocable.Language) comboBoxLang1.getSelectedItem());
+                        vocable.addTranslation(v);
+                        for(Vocable.Language lang : Vocable.Language.class.getEnumConstants()){
+                            if(lang != (Vocable.Language) comboBoxLang1.getSelectedItem() && lang != vocable.getLanguage()) {
+                                System.out.println(vocable.getLanguage().toString() + " != " + lang.toString());
+                                vocable.getTranslation(lang).
+                                        addTranslation(v);
+                            }
+                        }
+                    }
+
                 } catch (NullPointerException ex) {
                     System.out.println("(btnSaveEdit)one of the objects is null");
                 }
