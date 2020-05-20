@@ -1,13 +1,14 @@
 package com.asdmorning3.basic;
 
+import com.asdmorning3.components.VocableOverview;
 import com.asdmorning3.test.InterfaceLanguages;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+
+
 
 public class Edit {
 
@@ -16,6 +17,7 @@ public class Edit {
     JFrame frame;
     JPanel pane;
     JButton btnSubmit;
+    Object local_lock;
 
     JTextField txtFld1;
     JLabel lblLang1;
@@ -23,14 +25,19 @@ public class Edit {
     public JComboBox<Vocable.Language> comboBoxLang1;
     InterfaceLanguages.Languages lang;
     InterfaceLanguages languages;
+    GridBagConstraints c;
+    JFrame parent_;
+    boolean new_;
 
-    public Edit(VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang)
-    {
+    public Edit(JFrame parent, VocableDictionary v, Vocable vc, InterfaceLanguages.Languages int_lang) {
+        new_ = false;
+        parent_ = parent;
+        local_lock = new Object();
         languages = new InterfaceLanguages();
         vocab_dic = v;
         vocable = vc;
         pane = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+        c = new GridBagConstraints();
         btnSubmit = new JButton();
 
         txtFld1 = new JTextField(vc.getWord());
@@ -43,7 +50,6 @@ public class Edit {
         comboBoxLang1.setSelectedItem(vocable.getLanguage());
 
         frame.setSize(300, 300);
-
         c.gridx = 0;
         c.gridy++;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -54,22 +60,31 @@ public class Edit {
         c.gridx = 0;
         c.gridy++;
         c.insets = new Insets(10, 15, 10, 20);
+
         comboBoxLang1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                try{
-                    if(!((Vocable.Language)comboBoxLang1.getSelectedItem()).equals(vocable.getLanguage()))
-                    {
-                        txtFld1.setText((vocable.getTranslation((Vocable.Language)comboBoxLang1.getSelectedItem())).getWord());
-                        vocable = vocable.getTranslation((Vocable.Language)comboBoxLang1.getSelectedItem());
+                try {
+                    if (!((Vocable.Language) comboBoxLang1.getSelectedItem()).equals(vocable.getLanguage())) {
+                        if(vocable.contain((Vocable.Language) comboBoxLang1.getSelectedItem())){
+                            txtFld1.setText((vocable.getTranslation((Vocable.Language) comboBoxLang1.getSelectedItem())).getWord());
+                            vocable = vocable.getTranslation((Vocable.Language) comboBoxLang1.getSelectedItem());
+                            new_ = false;
+                        }
+                        else{
+                            txtFld1.setText("");
+                            new_ = true;
+                        }
                     }
-                }
-                catch (NullPointerException ex)
-                {
+                    else{
+                        if(txtFld1.getText().equals("") || new_){
+                            txtFld1.setText(vocable.getWord());
+                            new_ = false;
+                        }
+                    }
+                } catch (NullPointerException ex) {
                     txtFld1.setText("");
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     System.out.println(ex.toString());
                 }
             }
@@ -88,39 +103,33 @@ public class Edit {
 
         c.gridx = 1;
         c.gridy++;
+
         btnSubmit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    vocable = vocab_dic.replace(vocable.getWord(),
-                            txtFld1.getText(), vocable.getLanguage());
-                }
-                catch(NullPointerException ex)
-                {
+                    if(!new_)
+                        changeVocable(txtFld1.getText());
+                    else{
+                        System.out.println("curr vocab: " +vocable.getWord() + vocable.getLanguage());
+                        Vocable v = new Vocable(txtFld1.getText(), (Vocable.Language) comboBoxLang1.getSelectedItem());
+                        vocable.addTranslation(v);
+                        for(Vocable.Language lang : Vocable.Language.class.getEnumConstants()){
+                            if(lang != (Vocable.Language) comboBoxLang1.getSelectedItem() && lang != vocable.getLanguage()) {
+                                System.out.println(vocable.getLanguage().toString() + " != " + lang.toString());
+                                vocable.getTranslation(lang).
+                                        addTranslation(v);
+                            }
+                        }
+                    }
+
+                } catch (NullPointerException ex) {
                     System.out.println("(btnSaveEdit)one of the objects is null");
                 }
-             }
+            }
         });
         pane.add(btnSubmit, c);
 
-
-        frame.add(pane, BorderLayout.CENTER);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-            }
-        });
-        frame.setVisible(true);
-    }
-
-    //testing
-    public static void main(String args[])
-    {
-        VocableDictionary d = new VocableDictionary();
-        d.addVocable(new Vocable("hallo", Vocable.Language.GER),
-                new Vocable("hello", Vocable.Language.ENG), new Vocable("salut", Vocable.Language.FRA));
-        Edit g = new Edit(d, (Vocable) d.getVocableList().toArray()[0], InterfaceLanguages.Languages.EN);
     }
 
     public void setIntLang(InterfaceLanguages.Languages lang)
@@ -129,5 +138,19 @@ public class Edit {
         lblWord1.setText(languages.getString(lang, "word"));
         btnSubmit.setText(languages.getString(lang, "save"));
         frame.setTitle(languages.getString(lang, "edit"));
+    }
+
+    public VocableDictionary edit() {
+        JDialog myDialog = new JDialog(parent_, "edit", Dialog.ModalityType.DOCUMENT_MODAL);
+        myDialog.add(pane);
+        myDialog.pack();
+        myDialog.setVisible(true);
+        return vocab_dic;
+    }
+
+    public void changeVocable(String new_vcb)
+    {
+        vocable = vocab_dic.replace(vocable.getWord(),
+                new_vcb, vocable.getLanguage());
     }
 }

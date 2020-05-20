@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 public class VocableDictionary implements Serializable {
 
 	public VocableDictionary()
@@ -88,6 +89,32 @@ public class VocableDictionary implements Serializable {
 		return table;
 	}
 
+	public String[][] getTable(ArrayList<Vocable> vocables)
+	{
+		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
+		int row = 0;
+		int col = 0;
+		ArrayList<Vocable> germanVocab = new ArrayList<Vocable>();
+
+		for (Vocable vocab : vocables)
+		{
+			if(vocab.getLanguage() == Vocable.Language.GER)
+			{
+				germanVocab.add(vocab);
+			}
+		}
+
+		for (Vocable vocab : germanVocab) {
+			col = 0;
+			for (Vocable.Language language : Vocable.Language.class.getEnumConstants()) {
+				table[row][col] = vocab.getWord(language);
+				col++;
+			}
+			row++;
+		}
+		return table;
+	}
+
 	public void save(String path) throws IOException
 	{
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
@@ -121,7 +148,8 @@ public class VocableDictionary implements Serializable {
 		for(Vocable i : findVocable(old_vocab, lang))
 		{
 			i.editTranslation(lang, new_vocab);
-			assert(i.getTranslation(lang).getWord() == new_vocab);
+			return i;
+			/*assert(i.getTranslation(lang).getWord() == new_vocab);
 			for(Vocable.Language l : Vocable.Language.values())
 			{
 				if(l != lang)
@@ -132,7 +160,7 @@ public class VocableDictionary implements Serializable {
 					catch(NullPointerException ex) {}
 				}
 			}
-			return i;
+			return i;*/
 		}
 		return null;
 	}
@@ -233,14 +261,181 @@ public class VocableDictionary implements Serializable {
 		return tagsList;
 	}
 
+	public ArrayList<String> getTagsString() {
+		ArrayList<String> tagsString = new ArrayList<String>();
+		for(Tags tag : tagsList)
+		{
+			tagsString.add(tag.getDescription());
+		}
+		return tagsString;
+	}
+
 	public void addTagToVocable(Tags tag, Vocable vocable)
 	{
-		boolean addSuccess = vocable.addTag(tag);
+		vocable.addTag(tag);
 	}
 
 	public void removeTagToVocable(Tags tag, Vocable vocable)
 	{
-		boolean removeSuccess = vocable.removeTag(tag);
+		vocable.removeTag(tag);
+	}
+
+	public ArrayList<Vocable> getVocablesByTag(Tags tag, HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.hasTag(tag))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
+	public ArrayList<Vocable> getVocablesByTag(Tags tag, ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.hasTag(tag))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
+	public void changeVocableRating(Vocable.Rating rating, Vocable vocable)
+	{
+		vocable.changeRating(rating);
+	}
+
+	public Vocable.Rating getVocableRating(Vocable vocable)
+	{
+		return vocable.getRating();
+	}
+
+	public ArrayList<Vocable> getVocablesSortedAsc(HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+		for(Vocable.Rating rating : Vocable.Rating.values())
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(rating))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesSortedAsc(ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+		for(Vocable.Rating rating : Vocable.Rating.values())
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(rating))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesSortedDesc(HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(int index = Vocable.Rating.values().length - 1; index >= 0; index--)
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(Vocable.Rating.values()[index]))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesSortedDesc(ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(int index = Vocable.Rating.values().length - 1; index >= 0; index--)
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getRating().equals(Vocable.Rating.values()[index]))
+					sortedVocables.add(vocable);
+			}
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> getVocablesByRating(Vocable.Rating rating, HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.getRating().equals(rating))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
+	public ArrayList<Vocable> getVocablesByRating(Vocable.Rating rating, ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> vocables = new ArrayList<>();
+		for (Vocable vocable : list)
+		{
+			if(vocable.getRating().equals(rating))
+				vocables.add(vocable);
+		}
+		return  vocables;
+	}
+
+	public ArrayList<Vocable> sortVocablesByAlhpabet(ArrayList<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(char alphabet = 'a'; alphabet <='z'; alphabet++ )
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getWord(Vocable.Language.ENG).charAt(0) == alphabet )
+					sortedVocables.add(vocable);
+			}
+		}
+		for (Vocable vocable : list)
+		{
+			if(vocable.getWord(Vocable.Language.ENG).isEmpty())
+				sortedVocables.add(vocable);
+		}
+
+		return  sortedVocables;
+	}
+
+	public ArrayList<Vocable> sortVocablesByAlhpabet(HashSet<Vocable> list)
+	{
+		ArrayList<Vocable> sortedVocables = new ArrayList<>();
+
+		for(char alphabet = 'a'; alphabet <='z'; alphabet++ )
+		{
+			for (Vocable vocable : list)
+			{
+				if(vocable.getWord(Vocable.Language.ENG).charAt(0) == alphabet )
+					sortedVocables.add(vocable);
+			}
+		}
+		for (Vocable vocable : list)
+		{
+			if(vocable.getWord(Vocable.Language.ENG).isEmpty())
+				sortedVocables.add(vocable);
+		}
+
+		return  sortedVocables;
 	}
 
 	public String changeDifficulty(List<String> row_strings, boolean decrease) {
