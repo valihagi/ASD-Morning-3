@@ -145,7 +145,8 @@ public class VocableDictionary implements Serializable {
 		for(Vocable i : findVocable(old_vocab, lang))
 		{
 			i.editTranslation(lang, new_vocab);
-			assert(i.getTranslation(lang).getWord() == new_vocab);
+			return i;
+			/*assert(i.getTranslation(lang).getWord() == new_vocab);
 			for(Vocable.Language l : Vocable.Language.values())
 			{
 				if(l != lang)
@@ -156,7 +157,7 @@ public class VocableDictionary implements Serializable {
 					catch(NullPointerException ex) {}
 				}
 			}
-			return i;
+			return i;*/
 		}
 		return null;
 	}
