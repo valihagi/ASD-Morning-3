@@ -139,7 +139,7 @@ public class VocableOverview {
 		frame_.add(pane_);
 		popupMenu_.add(item_);
 		table_.setComponentPopupMenu(popupMenu_);
-		changeVisibility(true);
+		changeVisibility(false);
 	}
 
 	public void updateDifficulty(int row, String difficulty)
