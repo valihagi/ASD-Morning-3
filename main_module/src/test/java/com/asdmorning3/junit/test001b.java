@@ -4,6 +4,7 @@ import com.asdmorning3.basic.Tags;
 import com.asdmorning3.basic.Vocable;
 import com.asdmorning3.basic.VocableDictionary;
 import com.asdmorning3.test.InterfaceLanguages;
+import com.asdmorning3.test.InterfaceLanguages;
 import com.asdmorning3.test.studyInterface;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -195,9 +196,10 @@ public class test001b {
 	void createTable()
 	{
 		dictionary = new VocableDictionary();
+		InterfaceLanguages interfaceLanguages = new InterfaceLanguages();
 		setUpDict();
 
-		System.out.println(Arrays.deepToString(dictionary.getTable()));
+		System.out.println(Arrays.deepToString(dictionary.getTable(interfaceLanguages, InterfaceLanguages.Languages.EN)));
   }
 
   

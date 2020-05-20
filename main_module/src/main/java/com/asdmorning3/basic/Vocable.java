@@ -17,9 +17,28 @@ public class Vocable implements Serializable {
 		this.language_ = language;
 		this.translation_ = new HashMap<Language, Vocable>();
 		this.tags_ = new ArrayList<Tags>();
-		this.rating_ = Rating.NORMAL;
-
+		this.rating_ = Difficulty.MEDIUM;
+		this.rating_2_ = Rating.NORMAL;
 	}
+
+	public void increaseDifficulty() {
+		if(rating_ == Difficulty.EASY)
+			rating_ = Difficulty.MEDIUM;
+		else if(rating_ == Difficulty.MEDIUM)
+			rating_ = Difficulty.HARD;
+		else if (rating_ == Difficulty.HARD)
+			rating_ = Difficulty.EASY;
+	}
+
+	public void decreaseDifficulty() {
+		if(rating_ == Difficulty.HARD)
+			rating_ = Difficulty.MEDIUM;
+		else if(rating_ == Difficulty.MEDIUM)
+			rating_ = Difficulty.EASY;
+		else if(rating_ == Difficulty.EASY)
+			rating_ = Difficulty.HARD;
+	}
+
 
 	public enum Language {
 		ENG,
@@ -36,15 +55,23 @@ public class Vocable implements Serializable {
 		VERY_DIFFICULT
 	}
 
+	public enum Difficulty{
+		EASY,
+		MEDIUM,
+		HARD
+	}
+
 	private String word_;
 
 	private Language language_ ;
 
-	private Rating rating_;
+	private Rating rating_2_;
 
 	private HashMap<Language, Vocable> translation_;
 
 	private ArrayList<Tags> tags_;
+
+	private Difficulty rating_;
 
 	public boolean contain(Language lang){
 		return translation_.containsKey(lang);
@@ -159,6 +186,26 @@ public class Vocable implements Serializable {
 		}
 	}
 
+  public String getDifficultyString()
+  {
+  	switch (rating_)
+	{
+		case EASY:
+			return "Easy";
+		case MEDIUM:
+			return "Medium";
+		case HARD:
+			return "Hard";
+	}
+	return "Not rated!";
+  }
+
+	public Difficulty getRating_()
+	{
+		return rating_;
+	}
+
+
 	public boolean addTag(Tags addTag)
 	{
 		for(Tags tag : tags_)
@@ -201,12 +248,12 @@ public class Vocable implements Serializable {
 
 	public void changeRating(Rating rating)
 	{
-		this.rating_ = rating;
+		this.rating_2_ = rating;
 	}
 
 	public Rating getRating()
 	{
-		return this.rating_;
+		return this.rating_2_;
 	}
 
 }

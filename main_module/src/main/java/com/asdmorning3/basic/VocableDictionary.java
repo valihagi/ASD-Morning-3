@@ -1,5 +1,7 @@
 package com.asdmorning3.basic;
 
+import com.asdmorning3.test.InterfaceLanguages;
+
 import java.awt.*;
 import java.io.*;
 import java.util.List;
@@ -70,9 +72,9 @@ public class VocableDictionary implements Serializable {
 		}
 	}
 
-	public String[][] getTable()
+	public String[][] getTable(InterfaceLanguages interfaceLanguage, InterfaceLanguages.Languages languages)
 	{
-		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length];
+		String[][] table = new String[findVocable(Vocable.Language.GER).size()][Vocable.Language.class.getEnumConstants().length + 1];
 		int row = 0;
 		int col = 0;
 		for (Vocable vocab : findVocable(Vocable.Language.GER)) {
@@ -81,6 +83,7 @@ public class VocableDictionary implements Serializable {
 				table[row][col] = vocab.getWord(language);
 				col++;
 			}
+			table[row][col] = interfaceLanguage.getString(languages, vocab.getDifficultyString());
 			row++;
 		}
 		return table;
@@ -435,5 +438,39 @@ public class VocableDictionary implements Serializable {
 		return  sortedVocables;
 	}
 
+	public String changeDifficulty(List<String> row_strings, boolean decrease) {
+		ArrayList<List<Vocable>> arrays = new ArrayList<>(row_strings.size());
+		int i = 0;
+		int array_position = 0;
+		for (String s : row_strings)
+		{
+			arrays.add(i, findVocable(s, Vocable.Language.class.getEnumConstants()[i]));
+			if(Vocable.Language.class.getEnumConstants()[i] == Vocable.Language.GER)
+				array_position = i;
+			i++;
+		}
+		String difficulty = Vocable.Difficulty.MEDIUM.toString();
+		for (int k = 0; k < arrays.get(array_position).size(); k++)
+		{
+			if (arrays.get(array_position).get(k).getWord().equals(row_strings.get(array_position)))
+			{
+				for (int j = 1; j < Vocable.Language.class.getEnumConstants().length; j++)
+				{
+
+					if (arrays.get(array_position).get(k).getWord(Vocable.Language.class.getEnumConstants()[j])
+							.equals(row_strings.get(j)))
+					{
+						if(!decrease)
+							arrays.get(array_position).get(k).increaseDifficulty();
+						else
+							arrays.get(array_position).get(k).decreaseDifficulty();
+						difficulty = arrays.get(array_position).get(k).getDifficultyString();
+						break;
+					}
+				}
+			}
+		}
+		return difficulty;
+	}
 }
 
